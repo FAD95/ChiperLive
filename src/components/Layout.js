@@ -1,27 +1,38 @@
 import React, { memo } from 'react'
-import Link from 'next/link'
-const  Layout = memo(({children})=>{
+import Menu from './Menu'
+
+
+const  Layout = memo(()=>{
+  const loggedIn = true
   return (
     <div className='layout'>
       <header>
+      {
+        loggedIn && <Menu />
+      } 
+      <div>
         <img src='/static/chiper-logo.svg' />
         <h3>LIVE</h3>
-        { children }
+      </div>               
         <style jsx>{`
           header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             font-family: Monospace;
             margin: 10px 20px;
+            max-width: 100vw;
+          }
+          div{
+            display: flex;
+            margin-left: 10px;
           }
           h3 {
             color: red;
-            margin-left: 10px;
-            font-size: 3em;
+            margin-left: 5px;
+            font-size: 1.5em;
           }
           img {
-            width: 100px;
+            width: 80px;
           }
         `}</style>
       </header>

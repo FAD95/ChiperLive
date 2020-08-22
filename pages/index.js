@@ -1,3 +1,2 @@
-import SearchRepoContainer from 'containers/SearchRepoContainer'
-
-export default SearchRepoContainer
+import Login from 'containers/Login'
+export default Login
