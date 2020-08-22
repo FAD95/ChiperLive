@@ -75,6 +75,9 @@ const Menu=()=> {
                             font-weight: 600;
                             margin-bottom: 10px;
                         }
+                        a{
+                            color: white;
+                        }
                     `}
                     </style>
                 </>
