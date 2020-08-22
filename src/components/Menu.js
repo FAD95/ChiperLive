@@ -1,12 +1,13 @@
 import React, {useState} from 'react'
 import {MdClose} from 'react-icons/md'
 import MenuIcon from './MenuIcon'
+import Link from 'next/link'
 
 
 
 const Menu=()=> {
     const [isOpen, setIsOpen] = useState(false)
-    
+
     const handleClick = () => {
         setIsOpen(false)
     }
@@ -22,7 +23,9 @@ const Menu=()=> {
                             <MdClose/>
                         </div>
                         <ul>
+                            <li><Link href='/'><a>Inicio</a></Link></li>
                             <li>Perfil</li>
+                            <li><Link href='/live'><a>Live</a></Link></li>
                             <li>Configuración</li>
                             <li>Cerrar sesión</li>
                         </ul>           
@@ -43,7 +46,7 @@ const Menu=()=> {
                             top: 0;
                             bottom: 0;
                             z-index: 1;
-                            width: calc(100% - 200px);
+                            width: 200px;
                             background-color: red;                        
                             animation: animation 2s ease;
                         }
