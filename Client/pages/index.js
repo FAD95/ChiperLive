@@ -1,8 +1,19 @@
 import Head from '../src/components/head'
+import LiveStreamsList from '../src/components/LiveStreamsList'
 
-export default () => (
-  <div>
+const Index = () => (
+  <>
     <Head title='Chiper Live' />
-    <h1>Inicio</h1>
-  </div>
+    <div className='container'>
+      <LiveStreamsList />
+    </div>
+    <style jsx>{`
+      .container{
+        padding: 10px 20px;
+      }
+    `}
+    </style>
+  </>
 )
+
+export default Index
