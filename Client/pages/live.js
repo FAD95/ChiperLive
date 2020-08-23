@@ -1,5 +1,6 @@
 import Head from '../src/components/head'
 import { useEffect } from 'react'
+import io from 'socket.io-client';
 
 export default function FirstPost () {
   const peers = {};
