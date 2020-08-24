@@ -1,15 +1,21 @@
 import Head from '../src/components/head'
-import LiveStreamsList from '../src/components/LiveStreamsList'
+import Button from '../src/components/Button'
 
 const Index = () => (
   <>
     <Head title='Chiper Live' />
     <div className='container'>
-      <LiveStreamsList />
+      <h1>Bienvenido a Chiper Live</h1>
+      <Button width='200px' height='80px' link='/live'>Iniciar transmisión en vivo</Button>
     </div>
     <style jsx>{`
       .container{
-        padding: 10px 20px;
+        text-align: center;
+        max-width: 200px;
+        margin: 0 auto;
+      }
+      h1{
+        margin: 50px 0;
       }
     `}
     </style>

@@ -11,14 +11,13 @@ const Layout = memo(() => {
         {
           loggedIn && <Menu />
         }
-        <Link href="/">
+        <Link href='/'>
           <a>
             <img src='/images/chiper-logo.svg' />
             <h3>LIVE</h3>
           </a>
         </Link>
-        <div>
-        </div>
+        <div />
         <style jsx>{`
           header {
             display: flex;
