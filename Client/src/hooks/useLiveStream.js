@@ -71,13 +71,15 @@ const useLiveStream = () => {
       })
       .catch(err => {
         console.error(err)
+        return
       })
+      return () => {
+        liveStream.getTracks().forEach((track) => {
+          track.stop()
+        })
+      }
   }, [])
-  return () => {
-    liveStream.getTracks().forEach((track) => {
-      track.stop()
-    })
-  }
+ 
 }
 
 export default useLiveStream

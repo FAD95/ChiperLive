@@ -9,6 +9,9 @@ const useLocalStream = () => {
         localStream = stream
         var video = document.querySelector('video')
         video.srcObject = stream
+      }).catch(err => {
+        console.error(err)
+        return
       })
 
     return () => {
