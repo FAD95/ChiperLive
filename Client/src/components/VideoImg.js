@@ -1,5 +1,3 @@
-import { RiVideoLine } from 'react-icons/ri'
-
 const VideoImg = ({ image }) => {
   return (
     <>

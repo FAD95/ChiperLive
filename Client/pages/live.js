@@ -3,14 +3,13 @@ import useLiveStream from '../src/hooks/useLiveStream'
 import useLocalStream from '../src/hooks/useLocalStream'
 
 export default function FirstPost () {
-  
   useLiveStream()
   useLocalStream()
-  
+
   return (
     <>
-      <Head title='Chiper Live || En vivo'></Head>
-      <video autoPlay></video>
+      <Head title='Chiper Live || En vivo' />
+      <video autoPlay />
     </>
   )
 }
