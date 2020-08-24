@@ -6,8 +6,11 @@ export default function FirstPost () {
   const peers = {};
 
   useEffect(() => {
+    let liveStream
+    let localStream
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then(stream => {
+        liveStream = stream
         const socket = io('http://localhost:8080/');
      
         const broadcaster = {
@@ -74,9 +77,19 @@ export default function FirstPost () {
 
     navigator.mediaDevices.getUserMedia({ video: true, audio: false })
       .then(stream => {
+        localStream = stream
         var video = document.querySelector('video');
         video.srcObject = stream;
       })
+
+      return () =>{
+        liveStream.getTracks().forEach((track)=>{
+          track.stop()
+        })
+        localStream.getTracks().forEach((track)=>{
+          track.stop()
+        })
+      }
   }, [])
 
   return (
