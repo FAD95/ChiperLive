@@ -1,7 +1,11 @@
-const Button = ({ width, height, children }) => {
+import Link from 'next/link'
+
+const Button = ({ width, height, link, children }) => {
   return (
     <>
-      <button>{children}</button>
+      <Link href={link}>
+        <button>{children}</button>
+      </Link>
       <style jsx>{`
             button {
                 background-color: #13ce66;
@@ -11,7 +15,9 @@ const Button = ({ width, height, children }) => {
                 border-radius: 10px;
                 border: none;
                 font-weight: bold;
-                font-size:1.2em;
+                font-size:1em;
+                padding: 10px 20px;
+                text-decoration: none;
             }
         `}
       </style>

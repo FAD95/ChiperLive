@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import Link from 'next/link'
 
 import Menu from '../components/Menu'
 
@@ -10,10 +11,13 @@ const Layout = memo(() => {
         {
           loggedIn && <Menu />
         }
-        <div>
-          <img src='/images/chiper-logo.svg' />
-          <h3>LIVE</h3>
-        </div>
+        <Link href='/'>
+          <a>
+            <img src='/images/chiper-logo.svg' />
+            <h3>LIVE</h3>
+          </a>
+        </Link>
+        <div />
         <style jsx>{`
           header {
             display: flex;
@@ -22,10 +26,11 @@ const Layout = memo(() => {
             margin: 10px 20px;
             max-width: 100vw;
           }
-          div{
+          a{
             display: flex;
             align-items: center;
             margin-left: 10px;
+            text-decoration: none;
           }
           h3 {
             color: red;

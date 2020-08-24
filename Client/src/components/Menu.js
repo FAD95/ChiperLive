@@ -23,7 +23,6 @@ const Menu = () => {
               <ul>
                 <li><Link href='/'><a onClick={handleClick}>Inicio</a></Link></li>
                 <li><Link href='/profile'><a onClick={handleClick}>Perfil</a></Link></li>
-                <li><Link href='/live'><a onClick={handleClick}>Live</a></Link></li>
                 <li><Link href='/settings'><a onClick={handleClick}>Configuración</a></Link></li>
                 <li onClick={handleClick}>Cerrar sesión</li>
               </ul>
@@ -43,10 +42,10 @@ const Menu = () => {
                             left: 0;
                             top: 0;
                             bottom: 0;
-                            z-index: 1;
+                            z-index: 9999;
                             width: 200px;
                             background-color: red;                        
-                            animation: animation 2s ease;
+                            animation: animation 1s ease;
                         }
                         .closeMenu{
                             border: solid 1px white;

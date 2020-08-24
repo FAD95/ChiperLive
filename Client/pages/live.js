@@ -1,10 +1,15 @@
 import Head from '../src/components/head'
+import useLiveStream from '../src/hooks/useLiveStream'
+import useLocalStream from '../src/hooks/useLocalStream'
 
 export default function FirstPost () {
+  useLiveStream()
+  useLocalStream()
+
   return (
-    <div>
-      <Head title='Chiper Live || Live' />
-      <h1>Live</h1>
-    </div>
+    <>
+      <Head title='Chiper Live || En vivo' />
+      <video autoPlay />
+    </>
   )
 }
