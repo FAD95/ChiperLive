@@ -3,7 +3,7 @@ import createSignalingChannel from '../kinesis/createSignalingChannel'
 import deleteSignalingChannel from '../kinesis/deleteSignalingChannel'
 import { stopMaster } from '../kinesis/master'
 
-const useLiveStream = (
+const useCreateChannel = (
   channelName,
   addChannelName,
   removeChannelName,
@@ -35,4 +35,4 @@ const useLiveStream = (
   }, [channelName])
 }
 
-export default useLiveStream
+export default useCreateChannel

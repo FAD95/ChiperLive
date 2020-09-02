@@ -6,7 +6,7 @@ import { startMaster, stopMaster } from '../src/kinesis/master'
 import { connect } from 'react-redux'
 import addChannelName from '../src/redux/actions/addChannelName'
 import removeChannelName from '../src/redux/actions/removeChannelName'
-import useLiveStream from '../src/hooks/useLiveStream'
+import useCreateChannel from '../src/hooks/useCreateChannel'
 import useLocalStream from '../src/hooks/useLocalStream'
 
 // const formValuesExample = {
@@ -29,7 +29,7 @@ const formValues = {
 
 function Live({ channelName, addChannelName, removeChannelName }) {
   useLocalStream()
-  useLiveStream(channelName, addChannelName, removeChannelName, formValues)
+  useCreateChannel(channelName, addChannelName, removeChannelName, formValues)
   function onStatsReport(report) {
     // TODO: Publish stats
   }
