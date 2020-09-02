@@ -10,11 +10,14 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "amazon-kinesis-video-streams-webrtc": "^1.0.8",
+    "aws-sdk": "^2.744.0",
     "react": "16.13.1",
-    "react-native": "0.63.2"
+    "react-native": "0.63.2",
+    "react-native-webrtc": "^1.84.0"
   },
   "devDependencies": {
-    "@babel/core": "7.11.4",
+    "@babel/core": "7.11.5",
     "@babel/runtime": "7.11.2",
     "@react-native-community/eslint-config": "1.1.0",
     "babel-jest": "25.5.1",
