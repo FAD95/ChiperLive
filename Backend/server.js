@@ -10,11 +10,11 @@ const cors = require('cors')
 
 db.connect(config.dbUrl);
 
+require ('./auth/auth')
+
 app.use(cors());
 app.use(bodyparser.json());
-//app.use(router);
 
-//socket.connect(server);
 router(app);
 
 

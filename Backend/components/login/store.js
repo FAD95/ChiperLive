@@ -1,5 +1,5 @@
 
-const Model = require('./model');
+const Model = require('../user/model');
 
 
  
@@ -12,9 +12,11 @@ function addUser(user){
     let filter = {}; 
   if (filterUser !== null){
       filter = {"correo": filterUser }
-  }
-    const users = await Model.find(filter);
+  } 
+    
+   const  users = await Model.findOne(filter,'correo password');
    
+     
     return users;
   }
 

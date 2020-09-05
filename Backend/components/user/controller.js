@@ -14,7 +14,9 @@ function getUser(filterUser){
        "apellidos" : user.apellidos,
        "telefono":user.telefono,
        "correo" :user.correo,
-       "password": user.password
+       "password": user.password,
+       "ciudad" : user.ciudad,
+       "rol" : user.rol
    }
   return store.addUser(users);
  }
