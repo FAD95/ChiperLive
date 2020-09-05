@@ -1,14 +1,14 @@
-import { Image, Text, StyleSheet, View, StatusBar } from 'react-native';
+import { Image, Text, StyleSheet, View, StatusBar, TouchableOpacity } from 'react-native';
 import React from 'react';
 
-import Menu from './Menu';
-
-const Layout = ({ children }) => {
+const Layout = ({ children, openNav }) => {
     return (
         <React.Fragment>
             <StatusBar backgroundColor='white' barStyle='dark-content'/>
             <View style={styles.header}>
-                <Menu />
+                <TouchableOpacity onPress={() => openNav.toggleDrawer()}>
+                    <Image style={styles.drawer} source={require('../img/drawer.png')} />
+                </TouchableOpacity>
                 <Image style={styles.logo} source={require('../img/chiper-logo.png')}/>
                 <Text style={styles.logoTittle}>LIVE</Text>
             </View>
@@ -36,6 +36,10 @@ const styles = StyleSheet.create({
     logo: {
         marginLeft: 10
     },
+    drawer: {
+        height: 30,
+        width: 30
+    }
 })
 
 export default Layout;
