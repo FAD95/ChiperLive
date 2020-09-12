@@ -3,21 +3,23 @@ import createSignalingChannel from '../kinesis/createSignalingChannel'
 import deleteSignalingChannel from '../kinesis/deleteSignalingChannel'
 import { stopMaster } from '../kinesis/master'
 
-const useCreateChannel = (
+const useCreateChannel = async (
   channelName,
+  formValues,
   addChannelName,
   removeChannelName,
-  formValues
+  setChannelCreated
 ) => {
   useEffect(() => {
     if (channelName === '') {
-      // callback que se llama cuando se crea el channelARN dentro de createSignalingChannel
       addChannelName(formValues.channelName)
       const callCreateSignalingChannel = async () => {
         try {
           await createSignalingChannel(formValues)
+          setChannelCreated(true)
         } catch (error) {
           console.error(error)
+          setChannelCreated(true)
           console.log('The channel already exists')
         }
       }

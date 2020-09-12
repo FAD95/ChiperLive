@@ -1,27 +1,26 @@
 import { useEffect } from 'react'
-import isMobile from '../utils/isMobile'
 
-const useLocalStream = () => {
+const useLocalStream = async (isMobile) => {
   useEffect(() => {
-    let localStream
-
-    navigator.mediaDevices
-      .getUserMedia({
-        video: isMobile()
-          ? { facingMode: 'user' }
-          : { width: { exact: 480 }, height: { exact: 640 } },
-        audio: false,
-      })
-      .then((stream) => {
+    let localStream = {}
+    console.log({ isMobile })
+    async function getMedia() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: isMobile
+            ? { facingMode: 'user' }
+            : { width: { exact: 480 }, height: { exact: 640 } },
+          audio: false,
+        })
         localStream = stream
-        var video = document.querySelector('video')
+        const video = document.querySelector('video')
         video.srcObject = stream
-      })
-      .catch((err) => {
-        console.error(err)
+      } catch (error) {
+        console.error(error)
         return
-      })
-
+      }
+    }
+    getMedia()
     return () => {
       localStream.getTracks().forEach((track) => {
         track.stop()

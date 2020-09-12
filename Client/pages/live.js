@@ -1,14 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Head from '../src/components/head'
-import Button from '../src/components/Button'
+import ButtonBottom from '../src/components/ButtonBottom'
 import Video from '../src/components/Video'
+import InfoBottom from '../src/components/InfoBottom'
+import isMobile from '../src/utils/isMobile'
 import { startMaster, stopMaster } from '../src/kinesis/master'
 import { connect } from 'react-redux'
 import addChannelName from '../src/redux/actions/addChannelName'
 import removeChannelName from '../src/redux/actions/removeChannelName'
 import useCreateChannel from '../src/hooks/useCreateChannel'
 import useLocalStream from '../src/hooks/useLocalStream'
-
+import ConnectionClients from '../src/client/index'
 // const formValuesExample = {
 //   region: formValues.region,
 //   accessKeyId: formValues.accessKeyId,
@@ -27,44 +29,63 @@ const formValues = {
   sendAudio: true,
 }
 
-function Live({ channelName, addChannelName, removeChannelName }) {
-  useLocalStream()
-  useCreateChannel(channelName, addChannelName, removeChannelName, formValues)
-  function onStatsReport(report) {
-    // TODO: Publish stats
-  }
+function Live({ options }) {
+  const connectionClient = new ConnectionClient()
 
-  const handleStopTransmission = async (e) => {
-    e.preventDefault()
-    stopMaster()
-  }
-  const handleStartTransmission = async (e) => {
-    e.preventDefault()
-    startMaster(formValues, onStatsReport, (event) => {
-      remoteMessage.append(`${event.data}\n`)
-    })
-  }
+  let peerConnection = null
+
+  createStartStopButton(
+    async () => {
+      peerConnection = await connectionClient.createConnection(options)
+      window.peerConnection = peerConnection
+    },
+    () => {
+      peerConnection.close()
+    }
+  )
 
   return (
     <>
-      <Head title="Chiper Live || En vivo" />
+      <Head title='Chiper Live || En vivo' />
       <Video />
-      <Button
-        width="100px"
-        height="80px"
-        link=""
-        onClick={handleStopTransmission}
-      >
-        Parar transmisión
-      </Button>
-      <Button
-        width="100px"
-        height="80px"
-        link=""
-        onClick={handleStartTransmission}
-      >
-        Reanudar transmisión
-      </Button>
+      {/* {serverConnection ? (
+        <div>
+          <p>conectando al servidor...</p>
+        </div>
+      ) : null}
+      {!channelCreated ? (
+        <InfoBottom>Creando el canal</InfoBottom>
+      ) : !firstStart ? (
+        <ButtonBottom
+          width='100px'
+          height='80px'
+          link=''
+          onClick={handleStartTransmission}
+          bgcolor='#13ce66'
+        >
+          Iniciar transmisión
+        </ButtonBottom>
+      ) : !liveOn ? (
+        <ButtonBottom
+          bgcolor='#13ce66'
+          width='100px'
+          height='80px'
+          link=''
+          onClick={handleStartTransmission}
+        >
+          Reanudar transmisión
+        </ButtonBottom>
+      ) : (
+        <ButtonBottom
+          bgcolor='red'
+          width='100px'
+          height='80px'
+          link=''
+          onClick={handleStopTransmission}
+        >
+          Parar transmisión
+        </ButtonBottom>
+      )} */}
     </>
   )
 }

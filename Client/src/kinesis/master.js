@@ -1,6 +1,5 @@
 import { SignalingClient, Role } from 'amazon-kinesis-video-streams-webrtc'
 import { KinesisVideo, KinesisVideoSignalingChannels } from 'aws-sdk'
-import isMobile from '../utils/isMobile'
 
 const master = {
   signalingClient: null,
@@ -14,7 +13,8 @@ const master = {
 export async function startMaster(
   formValues,
   onStatsReport,
-  onRemoteDataMessage
+  onRemoteDataMessage,
+  isMobile
 ) {
   // Create KVS client
   const kinesisVideoClient = new KinesisVideo({
@@ -107,7 +107,7 @@ export async function startMaster(
     iceTransportPolicy: formValues.forceTURN ? 'relay' : 'all',
   }
 
-  const resolution = isMobile()
+  const resolution = isMobile
     ? { facingMode: 'user' }
     : { width: { exact: 480 }, height: { exact: 640 } }
 
@@ -188,12 +188,6 @@ export async function startMaster(
           )
         }
       }
-    })
-
-    // As remote tracks are received, add them to the remote view
-    // Se reciben los tracks del viewer
-    peerConnection.addEventListener('track', (event) => {
-      console.log(event.streams[0])
     })
 
     // If there's no video/audio, master.localStream will be null. So, we should skip adding the tracks from it.
