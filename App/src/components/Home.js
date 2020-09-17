@@ -3,12 +3,12 @@ import { Text } from 'react-native';
 
 import Layout from './Layout';
 
-const Video = ({ navigation }) => {
+const Home = ({ navigation }) => {
     return (
         <Layout openNav={navigation}>
-            <Text>Video!</Text>
+            <Text>Home!</Text>
         </Layout>
-    )   
+    )  
 }
 
-export default Video;
+export default Home;
