@@ -2,12 +2,26 @@ import { useState } from 'react'
 import { MdClose } from 'react-icons/md'
 import MenuIcon from './MenuIcon'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useSelector } from 'react-redux'
 
 const Menu = () => {
+  const isLive = useSelector((store) => store.isLive)
   const [isOpen, setIsOpen] = useState(false)
 
-  const handleClick = () => {
-    setIsOpen(false)
+  const router = useRouter()
+
+  const handleClick = (e, href) => {
+    e.preventDefault()
+    if (isLive) {
+      setIsOpen(false)
+      const ans = confirm('Are you sure you want to finish the LIVE?')
+      if (ans) router.push(href)
+      console.log('Nothing happened')
+    } else {
+      setIsOpen(false)
+      router.push(href)
+    }
   }
 
   return (
@@ -16,26 +30,22 @@ const Menu = () => {
       {isOpen && (
         <>
           <section>
-            <div className="closeMenu" onClick={handleClick}>
+            <div className='closeMenu' onClick={(e) => handleClick(e, '')}>
               <MdClose />
             </div>
             <ul>
               <li>
-                <Link href="/">
-                  <a onClick={handleClick}>Inicio</a>
-                </Link>
+                <a onClick={(e) => handleClick(e, '/')}>Inicio</a>
               </li>
               <li>
-                <Link href="/profile">
-                  <a onClick={handleClick}>Perfil</a>
-                </Link>
+                <a onClick={(e) => handleClick(e, '/profile')}>Perfil</a>
               </li>
               <li>
-                <Link href="/settings">
-                  <a onClick={handleClick}>Configuración</a>
-                </Link>
+                <a onClick={(e) => handleClick(e, '/settings')}>
+                  Configuración
+                </a>
               </li>
-              <li onClick={handleClick}>Cerrar sesión</li>
+              <li onClick={(e) => handleClick(e, '')}>Cerrar sesión</li>
             </ul>
           </section>
 
