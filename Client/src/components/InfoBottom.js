@@ -1,8 +1,6 @@
 const InfoBottom = ({ children }) => (
   <>
-    <div>
-      <p>{children}</p>
-    </div>
+    <div>{children}</div>
     <style jsx>{`
       div {
         position: absolute;
@@ -16,12 +14,11 @@ const InfoBottom = ({ children }) => (
         justify-content: center;
         align-items: center;
         border-radius: 10px 10px 0 0;
-      }
-      p {
         color: white;
         font-weight: bold;
       }
-    `}</style>
+    `}
+    </style>
   </>
 )
 

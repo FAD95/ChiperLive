@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-const ButtonBottom = ({ bgcolor, link, onClick, children }) => {
+const ButtonBottom = ({ bgColor, link, onClick, children }) => {
   return (
     <>
       {link ? (
@@ -14,7 +14,7 @@ const ButtonBottom = ({ bgcolor, link, onClick, children }) => {
         {`
           button {
             position: absolute;
-            background-color: ${bgcolor};
+            background-color: ${bgColor};
             color: white;
             border-radius: 10px 10px 0 0;
             border: none;
