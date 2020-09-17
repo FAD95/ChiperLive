@@ -1,104 +1,113 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import Loader from 'react-loader-spinner'
+import { useRouter } from 'next/router'
+
 import Head from '../src/components/head'
 import ButtonBottom from '../src/components/ButtonBottom'
 import Video from '../src/components/Video'
 import InfoBottom from '../src/components/InfoBottom'
-import isMobile from '../src/utils/isMobile'
-import { startMaster, stopMaster } from '../src/kinesis/master'
-import { connect } from 'react-redux'
-import addChannelName from '../src/redux/actions/addChannelName'
-import removeChannelName from '../src/redux/actions/removeChannelName'
-import useCreateChannel from '../src/hooks/useCreateChannel'
-import useLocalStream from '../src/hooks/useLocalStream'
-import ConnectionClients from '../src/client/index'
-// const formValuesExample = {
-//   region: formValues.region,
-//   accessKeyId: formValues.accessKeyId,
-//   secretAccessKey: formValues.secretAccessKey,
-//   sessionToken: formValues.sessionToken,
-//   endpoint: formValues.endpoint,
-//   channelName: 'Prueba1',
-// }
 
-const formValues = {
-  region: process.env.AWS_REGION,
-  accessKeyId: process.env.AWS_ACEESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  channelName: 'Prueba8',
-  sendVideo: true,
-  sendAudio: true,
-}
+import useSocket from '../src/hooks/useSocket'
+import useCamera from '../src/hooks/useCamera'
+import startStreaming from '../src/utils/startStreaming'
+import stopStreaming from '../src/utils/stopStreaming'
 
-function Live({ options }) {
-  const connectionClient = new ConnectionClient()
+import { useSelector, useDispatch } from 'react-redux'
+import setIsLive from '../src/redux/actions/setIsLive'
 
-  let peerConnection = null
+const ENDPOINT = 'http://localhost:8080/'
 
-  createStartStopButton(
-    async () => {
-      peerConnection = await connectionClient.createConnection(options)
-      window.peerConnection = peerConnection
-    },
-    () => {
-      peerConnection.close()
+function Live () {
+  const isLive = useSelector((store) => store.isLive)
+  const dispatch = useDispatch()
+
+  const mediaRecorderRef = useRef()
+
+  const [serverConnected, socket] = useSocket({ ENDPOINT })
+  const [
+    { inputStreamRef, videoRef, canvasRef, requestAnimationRef, cameraEnabled }
+  ] = useCamera()
+
+  useEffect(() => {
+    return () => {
+      dispatch(setIsLive(false))
     }
-  )
+  }, [])
+
+  const handleStartStreaming = (e) => {
+    e.preventDefault()
+    startStreaming(
+      videoRef,
+      canvasRef,
+      requestAnimationRef,
+      inputStreamRef,
+      mediaRecorderRef,
+      socket
+    )
+    dispatch(setIsLive(true))
+  }
+
+  const router = useRouter()
+
+  const finishLive = (e) => {
+    e.preventDefault()
+    const ans = confirm('Are you sure you want to finish the LIVE?')
+    if (ans) {
+      router.push('/')
+    } else {
+      console.log('Nothing happened')
+    }
+  }
 
   return (
     <>
       <Head title='Chiper Live || En vivo' />
-      <Video />
-      {/* {serverConnection ? (
-        <div>
-          <p>conectando al servidor...</p>
+      {!cameraEnabled && (
+        <div className='container'>
+          <Loader
+            type='Rings'
+            color='#fa0236'
+            height={100}
+            width={100}
+            timeout={3000} // 3 secs
+          />
         </div>
-      ) : null}
-      {!channelCreated ? (
-        <InfoBottom>Creando el canal</InfoBottom>
-      ) : !firstStart ? (
+      )}
+
+      <Video videoRef={videoRef} />
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
+
+      {!serverConnected ? (
+        <InfoBottom>
+          <p>Conectando con el servidor...</p>
+        </InfoBottom>
+      ) : !cameraEnabled ? (
+        <InfoBottom>
+          <p>Habilitando camara...</p>
+        </InfoBottom>
+      ) : !isLive ? (
         <ButtonBottom
-          width='100px'
-          height='80px'
-          link=''
-          onClick={handleStartTransmission}
-          bgcolor='#13ce66'
+          onClick={(e) => handleStartStreaming(e)}
+          bgColor='#13ce66'
         >
-          Iniciar transmisión
-        </ButtonBottom>
-      ) : !liveOn ? (
-        <ButtonBottom
-          bgcolor='#13ce66'
-          width='100px'
-          height='80px'
-          link=''
-          onClick={handleStartTransmission}
-        >
-          Reanudar transmisión
+          <p>Iniciar transmisión</p>
         </ButtonBottom>
       ) : (
-        <ButtonBottom
-          bgcolor='red'
-          width='100px'
-          height='80px'
-          link=''
-          onClick={handleStopTransmission}
-        >
-          Parar transmisión
+        <ButtonBottom onClick={(e) => finishLive(e)} bgColor='red'>
+          <p>Terminar transmisión</p>
         </ButtonBottom>
-      )} */}
+      )}
+
+      <style jsx>{`
+        .container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      `}
+      </style>
     </>
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    channelName: state.channelName,
-  }
-}
-
-const mapDispatchToProps = {
-  addChannelName,
-  removeChannelName,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Live)
+export default Live
