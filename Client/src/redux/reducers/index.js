@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
-import channelName from './channelName'
+import isLive from './isLive'
 
 const reducer = combineReducers({
-  channelName,
+  isLive
 })
 
 export default reducer
