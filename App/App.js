@@ -12,7 +12,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import Home from './src/components/Home';
-import Video from './src/components/Video';
+import VideoStream from './src/components/Video';
 
 const Drawer = createDrawerNavigator();
 
@@ -23,7 +23,7 @@ const App: () => React$Node = () => {
     <NavigationContainer>
       <Drawer.Navigator initialRouteName='Home'>
         <Drawer.Screen name='Home' component={Home}/> 
-        <Drawer.Screen name='Video' component={Video}/>
+        <Drawer.Screen name='Video' component={VideoStream}/>
       </Drawer.Navigator>      
     </NavigationContainer>
   );
