@@ -1,13 +1,15 @@
+import { memo } from 'react'
+
 import Head from '../src/components/head'
 import Button from '../src/components/Button'
 
-const Index = () => {
+const Index = memo(() => {
   return (
     <>
-      <Head title="Chiper Live" />
-      <div className="container">
+      <Head title='Chiper Live' />
+      <div className='container'>
         <h1>Bienvenido a Chiper Live</h1>
-        <Button width="200px" height="80px" link="/live">
+        <Button width='200px' height='80px' link='/live'>
           <div>Iniciar transmisión en vivo</div>
         </Button>
       </div>
@@ -25,6 +27,5 @@ const Index = () => {
       </style>
     </>
   )
-}
-
+})
 export default Index
