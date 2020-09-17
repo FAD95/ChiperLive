@@ -1,11 +1,12 @@
-const Video = () => (
+const Video = ({ videoRef }) => (
   <>
-    <video autoPlay></video>
+    <video ref={videoRef} muted playsInline />
     <style jsx>{`
       video {
         max-width: 100vw;
       }
-    `}</style>
+    `}
+    </style>
   </>
 )
 
