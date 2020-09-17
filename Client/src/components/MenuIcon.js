@@ -1,15 +1,15 @@
 import React from 'react'
 
 const MenuIcon = ({ setIsOpen }) => {
-  function handleClick() {
+  function handleClick () {
     setIsOpen(true)
   }
   return (
     <>
       <section onClick={handleClick}>
-        <div className="line" />
-        <div className="line" />
-        <div className="line" />
+        <div className='line' />
+        <div className='line' />
+        <div className='line' />
       </section>
 
       <style jsx>
