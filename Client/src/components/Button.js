@@ -23,6 +23,7 @@ const Button = ({ width, height, link, onClick, children }) => {
             font-size: 1em;
             padding: 10px 20px;
             text-decoration: none;
+            margin-top: 20px;
           }
         `}
       </style>
