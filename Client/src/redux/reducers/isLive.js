@@ -3,7 +3,7 @@ import { type as SET_IS_LIVE } from '../actions/setIsLive'
 
 const defaultState = false
 
-const channelName = (state = defaultState, { type, payload }) => {
+const isLive = (state = defaultState, { type, payload }) => {
   switch (type) {
     case SET_IS_LIVE: {
       return payload
@@ -13,4 +13,4 @@ const channelName = (state = defaultState, { type, payload }) => {
   }
 }
 
-export default channelName
+export default isLive
