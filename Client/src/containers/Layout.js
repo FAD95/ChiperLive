@@ -4,9 +4,10 @@ import { useRouter } from 'next/router'
 import Menu from '../components/Menu'
 
 import { useSelector } from 'react-redux'
-import setIsLive from '../redux/actions/setIsLive'
 
 const Layout = memo(() => {
+  const auth = useSelector((store) => store.auth)
+  const logged = auth.status
   const isLive = useSelector((store) => store.isLive)
 
   const router = useRouter()
@@ -27,7 +28,7 @@ const Layout = memo(() => {
   return (
     <div className='layout'>
       <header>
-        <Menu />
+        {logged && <Menu />}
 
         <a onClick={(e) => finishLive(e)}>
           <img src='/images/chiper-logo.svg' />
@@ -41,7 +42,7 @@ const Layout = memo(() => {
               display: flex;
               align-items: center;
               font-family: Monospace;
-              margin: 10px 20px;
+              margin: 10px ${logged ? '20px' : '5px'};
               max-width: 100vw;
             }
             a {

@@ -17,7 +17,16 @@ import setIsLive from '../src/redux/actions/setIsLive'
 
 const ENDPOINT = 'http://localhost:8080/'
 
-function Live () {
+function Live() {
+  const auth = useSelector((store) => store.auth)
+  const logged = auth.status
+  const router = useRouter()
+  useEffect(() => {
+    if (!logged) {
+      router.push('/login')
+      return
+    }
+  })
   const isLive = useSelector((store) => store.isLive)
   const dispatch = useDispatch()
 
@@ -25,7 +34,7 @@ function Live () {
 
   const [serverConnected, socket] = useSocket({ ENDPOINT })
   const [
-    { inputStreamRef, videoRef, canvasRef, requestAnimationRef, cameraEnabled }
+    { inputStreamRef, videoRef, canvasRef, requestAnimationRef, cameraEnabled },
   ] = useCamera()
 
   useEffect(() => {
@@ -47,8 +56,6 @@ function Live () {
     dispatch(setIsLive(true))
   }
 
-  const router = useRouter()
-
   const finishLive = (e) => {
     e.preventDefault()
     const ans = confirm('Are you sure you want to finish the LIVE?')
@@ -60,53 +67,56 @@ function Live () {
   }
 
   return (
-    <>
-      <Head title='Chiper Live || En vivo' />
-      {!cameraEnabled && (
-        <div className='container'>
-          <Loader
-            type='Rings'
-            color='#fa0236'
-            height={100}
-            width={100}
-            timeout={3000} // 3 secs
-          />
-        </div>
-      )}
+    logged && (
+      <>
+        <Head title='Chiper Live | En vivo' />
+        {!cameraEnabled && (
+          <div className='container'>
+            <Loader
+              type='Rings'
+              color='#fa0236'
+              height={100}
+              width={100}
+              timeout={3000} // 3 secs
+            />
+          </div>
+        )}
 
-      <Video videoRef={videoRef} />
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
+        <Video videoRef={videoRef} />
+        <canvas ref={canvasRef} style={{ display: 'none' }} />
 
-      {!serverConnected ? (
-        <InfoBottom>
-          <p>Conectando con el servidor...</p>
-        </InfoBottom>
-      ) : !cameraEnabled ? (
-        <InfoBottom>
-          <p>Habilitando camara...</p>
-        </InfoBottom>
-      ) : !isLive ? (
-        <ButtonBottom
-          onClick={(e) => handleStartStreaming(e)}
-          bgColor='#13ce66'
-        >
-          <p>Iniciar transmisión</p>
-        </ButtonBottom>
-      ) : (
-        <ButtonBottom onClick={(e) => finishLive(e)} bgColor='red'>
-          <p>Terminar transmisión</p>
-        </ButtonBottom>
-      )}
+        {!serverConnected ? (
+          <InfoBottom>
+            <p>Conectando con el servidor...</p>
+          </InfoBottom>
+        ) : !cameraEnabled ? (
+          <InfoBottom>
+            <p>Habilitando camara...</p>
+          </InfoBottom>
+        ) : !isLive ? (
+          <ButtonBottom
+            onClick={(e) => handleStartStreaming(e)}
+            bgColor='#13ce66'
+          >
+            <p>Iniciar transmisión</p>
+          </ButtonBottom>
+        ) : (
+          <ButtonBottom onClick={(e) => finishLive(e)} bgColor='red'>
+            <p>Terminar transmisión</p>
+          </ButtonBottom>
+        )}
 
-      <style jsx>{`
-        .container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-      `}
-      </style>
-    </>
+        <style jsx>
+          {`
+            .container {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+          `}
+        </style>
+      </>
+    )
   )
 }
 
