@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react'
-import isMobile from '../utils/isMobile'
 
 const useCamera = () => {
   const [cameraEnabled, setCameraEnabled] = useState(false)
@@ -34,7 +33,7 @@ const useCamera = () => {
       try {
         inputStreamRef.current = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video: { facingMode: 'user' }
+          video: { facingMode: 'user' },
         })
       } catch (error) {
         console.error(error)
@@ -42,28 +41,30 @@ const useCamera = () => {
     }
 
     reqCamera().then(async () => {
-      videoRef.current.srcObject = inputStreamRef.current
-
-      try {
-        await videoRef.current.play()
-        canvasRef.current.height = videoRef.current.clientHeight
-        canvasRef.current.width = videoRef.current.clientWidth
-        requestAnimationRef.current = requestAnimationFrame(updateCanvas)
-        setCameraEnabled(true)
-      } catch (error) {
-        console.error(error)
+      if (videoRef.current) {
+        videoRef.current.srcObject = inputStreamRef.current
+        try {
+          await videoRef.current.play()
+          canvasRef.current.height = videoRef.current.clientHeight
+          canvasRef.current.width = videoRef.current.clientWidth
+          requestAnimationRef.current = requestAnimationFrame(updateCanvas)
+          setCameraEnabled(true)
+        } catch (error) {
+          console.error(error)
+        }
       }
     })
 
     return () => {
-      inputStreamRef.current.getTracks().forEach((track) => {
-        track.stop()
-      })
+      if (inputStreamRef.current)
+        inputStreamRef.current.getTracks().forEach((track) => {
+          track.stop()
+        })
       setCameraEnabled(false)
     }
   }, [])
   return [
-    { inputStreamRef, videoRef, canvasRef, requestAnimationRef, cameraEnabled }
+    { inputStreamRef, videoRef, canvasRef, requestAnimationRef, cameraEnabled },
   ]
 }
 
