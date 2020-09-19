@@ -10,11 +10,18 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-navigation/drawer": "^5.9.0",
+    "@react-navigation/native": "^5.7.3",
     "react": "16.13.1",
-    "react-native": "0.63.2"
+    "react-native": "0.63.2",
+    "react-native-gesture-handler": "^1.8.0",
+    "react-native-reanimated": "^1.13.0",
+    "react-native-safe-area-context": "^3.1.7",
+    "react-native-screens": "^2.10.1",
+    "react-native-video": "^5.1.0-alpha8"
   },
   "devDependencies": {
-    "@babel/core": "7.11.4",
+    "@babel/core": "7.11.5",
     "@babel/runtime": "7.11.2",
     "@react-native-community/eslint-config": "1.1.0",
     "babel-jest": "25.5.1",
