@@ -1,6 +1,9 @@
 const Author = () => {
   return (
-    <h1>Autor</h1>
+    <>
+      <h1>Fad</h1>
+      <p>feescorciam@pm.me</p>
+    </>
   )
 }
 
