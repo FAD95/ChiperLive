@@ -1,17 +1,15 @@
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import { MdClose } from 'react-icons/md'
 import MenuIcon from './MenuIcon'
 import { useRouter } from 'next/router'
 
-import { useSelector, useDispatch } from 'react-redux'
-import setAuth from '../redux/actions/setAuth'
+import { useSelector } from 'react-redux'
 
-const Menu = () => {
+const Menu = memo(() => {
   const isLive = useSelector((store) => store.isLive)
   const [isOpen, setIsOpen] = useState(false)
 
   const router = useRouter()
-  const dispatch = useDispatch()
 
   const handleClick = (e, href) => {
     e.preventDefault()
@@ -23,6 +21,15 @@ const Menu = () => {
     } else {
       setIsOpen(false)
       router.push(href)
+    }
+  }
+
+  const handleExitSession = async () => {
+    try {
+      await localStorage.removeItem('state')
+      window.location.replace('/login')
+    } catch (error) {
+      console.error(error)
     }
   }
 
@@ -47,18 +54,7 @@ const Menu = () => {
                   Configuración
                 </a>
               </li>
-              <li
-                onClick={() =>
-                  dispatch(
-                    setAuth({
-                      status: false,
-                      token: '',
-                    })
-                  )
-                }
-              >
-                Cerrar sesión
-              </li>
+              <li onClick={handleExitSession}>Cerrar sesión</li>
             </ul>
           </section>
 
@@ -116,6 +112,6 @@ const Menu = () => {
       )}
     </>
   )
-}
+})
 
 export default Menu
