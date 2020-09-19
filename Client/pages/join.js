@@ -1,26 +1,17 @@
-import { useEffect, useRef } from 'react'
+import { useRef, memo } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import axios from 'axios'
 
-import { useSelector } from 'react-redux'
+import useAuth from '../src/hooks/useAuth'
 
 import Head from '../src/components/head'
 import Button from '../src/components/Button'
 
-const Join = () => {
+const Join = memo(() => {
   const email = useRef()
   const password = useRef()
-  const auth = useSelector((store) => store.auth)
-  const logged = auth.status
 
-  const router = useRouter()
-
-  useEffect(() => {
-    if (logged) {
-      router.push('/')
-    }
-  })
+  const [logged] = useAuth('/join')
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -45,23 +36,21 @@ const Join = () => {
           <form action='submit' onSubmit={handleSubmit}>
             <h1>Crear Cuenta</h1>
             <div className='input-container'>
-              <input ref={email} type='email' placeholder='Email' required />
+              <input ref={email} type='email' placeholder='e-mail' required />
             </div>
             <div className='input-container'>
               <input
                 ref={password}
                 type='password'
-                placeholder='Password'
+                placeholder='Contraseña'
                 required
               />
             </div>
             <Button type='submit'>Aceptar</Button>
-            <p>
-              ¿Ya tienes una cuenta?
-              <Link href='/login'>
-                <a>Iniciar Sesión</a>
-              </Link>
-            </p>
+            <p>¿Ya tienes una cuenta?</p>
+            <Link href='/login'>
+              <a>Iniciar Sesión</a>
+            </Link>
           </form>
         </div>
         <style jsx>{`
@@ -119,6 +108,6 @@ const Join = () => {
       </>
     )
   )
-}
+})
 
 export default Join
