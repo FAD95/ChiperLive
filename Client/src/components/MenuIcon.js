@@ -1,7 +1,7 @@
-import React from 'react'
+import { memo } from 'react'
 
-const MenuIcon = ({ setIsOpen }) => {
-  function handleClick () {
+const MenuIcon = memo(({ setIsOpen }) => {
+  function handleClick() {
     setIsOpen(true)
   }
   return (
@@ -41,6 +41,6 @@ const MenuIcon = ({ setIsOpen }) => {
       </style>
     </>
   )
-}
+})
 
 export default MenuIcon
