@@ -10,14 +10,24 @@ import Button from '../src/components/Button'
 const Join = memo(() => {
   const email = useRef()
   const password = useRef()
+  const firstName = useRef()
+  const lastNames = useRef()
+  const phone = useRef()
+  const city = useRef()
+  const role = useRef()
 
   const [logged] = useAuth('/join')
 
   const handleSubmit = (e) => {
     e.preventDefault()
     axios
-      .post(process.env.SERVER + '/signup', {
+      .post(process.env.SERVER + '/user', {
+        names: names.current.value,
+        lastNames: lastNames.current.value,
+        phone: phone.current.value,
         email: email.current.value,
+        city: city.current.value,
+        role: role.current.value,
         password: password.current.value,
       })
       .then(function (response) {
@@ -36,7 +46,42 @@ const Join = memo(() => {
           <form action='submit' onSubmit={handleSubmit}>
             <h1>Crear Cuenta</h1>
             <div className='input-container'>
+              <input
+                ref={firstName}
+                type='text'
+                placeholder='Nombres'
+                required
+              />
+            </div>
+            <div className='input-container'>
+              <input
+                ref={lastNames}
+                type='text'
+                placeholder='Apellidos'
+                required
+              />
+            </div>
+            <div className='input-container'>
+              <select name='coutry-code'>
+                <option value='(+57)'>(+57)</option>
+                <option value='(+52)'>(+52)</option>
+              </select>
+              <input
+                ref={phone}
+                type='tel'
+                placeholder='Telefono'
+                pattern='[0-9]{8,11}'
+                required
+              />
+            </div>
+            <div className='input-container'>
               <input ref={email} type='email' placeholder='e-mail' required />
+            </div>
+            <div className='input-container'>
+              <input ref={city} type='text' placeholder='Ciudad' required />
+            </div>
+            <div className='input-container'>
+              <input ref={role} type='text' placeholder='Rol' required />
             </div>
             <div className='input-container'>
               <input
@@ -55,7 +100,7 @@ const Join = memo(() => {
         </div>
         <style jsx>{`
           #container {
-            margin-top: 10vh;
+            margin-top: 5vh;
             display: flex;
             justify-content: center;
             text-align: center;
