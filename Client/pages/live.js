@@ -9,6 +9,8 @@ import InfoBottom from '../src/components/InfoBottom'
 
 import useSocket from '../src/hooks/useSocket'
 import useCamera from '../src/hooks/useCamera'
+import useAuth from '../src/hooks/useAuth'
+
 import startStreaming from '../src/utils/startStreaming'
 import stopStreaming from '../src/utils/stopStreaming'
 
@@ -18,15 +20,8 @@ import setIsLive from '../src/redux/actions/setIsLive'
 const ENDPOINT = 'http://localhost:8080/'
 
 function Live() {
-  const auth = useSelector((store) => store.auth)
-  const logged = auth.status
-  const router = useRouter()
-  useEffect(() => {
-    if (!logged) {
-      router.push('/login')
-      return
-    }
-  })
+  const [logged] = useAuth('/live')
+
   const isLive = useSelector((store) => store.isLive)
   const dispatch = useDispatch()
 
