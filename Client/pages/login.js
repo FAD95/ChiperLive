@@ -21,24 +21,27 @@ const Login = memo(() => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    dispatch(
-      setAuth({
-        status: true,
-        token: 'a',
-      })
-    )
     axios
       .post(process.env.SERVER + '/login', {
         email: email.current.value,
         password: password.current.value,
       })
       .then(function (response) {
-        console.log(response)
+        dispatch(
+          setAuth({
+            status: true,
+            token: response.data.token,
+          })
+        )
         router.push('/')
       })
       .catch(function (error) {
-        console.error(error)
-        router.push('/')
+        if (error.response)
+          if (error.response.status === 401) {
+            alert('E-mail o contraseña incorrectos')
+            return
+          }
+        return alert('Lo sentimos, intentalo de nuevo en unos minutos.')
       })
   }
 
