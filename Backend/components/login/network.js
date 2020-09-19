@@ -1,10 +1,7 @@
 const express = require('express');
-const bcrypt = require ('bcrypt');
 const jwt = require ('jsonwebtoken');
 const {seedJwt,tokenCaducidad} =require('../../config');
 const router = express.Router();
-const response = require('../../network/response');
-const controller = require('./controller.js')
 
 const passport = require('passport')
 
@@ -26,7 +23,7 @@ router.post('/',  async (req, res, next) => {
           if (err) return next(err)
          
             
-          const token = jwt.sign({ user}, 'top_secret')
+          const token = jwt.sign({ user}, seedJwt)
           return res.json({ info,token })
         })
       }

@@ -4,8 +4,9 @@ const response = require('../../network/response');
 const controller = require('./controller');
 
 
+const passport = require('passport')
 
-router.get('/', (req,res)=>{
+router.get('/',passport.authenticate('jwt',{session :false})  ,(req,res)=>{
     const filterUser = req.query.user || null;
     
     controller.getUser(filterUser)

@@ -7,7 +7,8 @@ const routes = function(server){
   
   server.use('/login',login);
   server.use('/user',user);
-  server.use('/chat',chat)
+  server.use('/chat',chat);
+  server.use('/singup',user);
 }
 
 module.exports = routes;

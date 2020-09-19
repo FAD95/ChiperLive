@@ -1,25 +1,14 @@
 const passport = require('passport')
 const localStrategy = require('passport-local').Strategy
-const User =       require('../components/user/model')
 const controller = require('../components/login/controller')
 const bcrypt = require('bcrypt')
 const JWTStrategy = require('passport-jwt').Strategy
 const ExtractJWT = require('passport-jwt').ExtractJwt
-const correo = null;
+const {seedJwt } = require('../config');
 
 
 
-passport.use('signup', new localStrategy({
-    usernameField: 'email',
-    passwordField: 'password'
-}, async (email, password, done) => {
-    try {
-        const user = await User.create({ email, password })
-        return done(null, user)
-    } catch (e) {
-        done(e)
-    }
-}))
+
 
 passport.use('login', new localStrategy({
     usernameField: 'email',
@@ -27,6 +16,7 @@ passport.use('login', new localStrategy({
 }, async (email, password, done) => {
   
        if (email){
+          
        controller.getUser(email)
        .then ((data)=>{
             console.log(data) 
@@ -38,7 +28,7 @@ passport.use('login', new localStrategy({
                 
                 bcrypt.compare(password, data.password)
                 .then(match => {
-                    console.log('match '+ match)
+                   
                    if (match == true){
                   return done(null, data, { message: 'Login successfull' }) 
                   }else {
@@ -62,8 +52,8 @@ passport.use('login', new localStrategy({
 ))
 
 passport.use(new JWTStrategy({
-    secretOrKey: 'top_secret',
-    jwtFromRequest: ExtractJWT.fromUrlQueryParameter('secret_token')
+    secretOrKey: seedJwt,
+    jwtFromRequest: ExtractJWT.fromUrlQueryParameter('token')
 }, async (token, done) => {
     try {
         return done(null, token.user)
