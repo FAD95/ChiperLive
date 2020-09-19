@@ -1,20 +1,12 @@
-import { memo, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import { useSelector } from 'react-redux'
+import { memo } from 'react'
+
+import useAuth from '../src/hooks/useAuth'
 
 import Head from '../src/components/head'
 import Button from '../src/components/Button'
 
 const Index = memo(() => {
-  const auth = useSelector((store) => store.auth)
-  const logged = auth.status
-  const router = useRouter()
-  useEffect(() => {
-    if (!logged) {
-      router.push('/login')
-    }
-  })
-
+  const [logged] = useAuth('/index')
   return (
     logged && (
       <>
