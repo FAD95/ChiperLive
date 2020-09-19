@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import Menu from '../components/Menu'
@@ -6,8 +6,11 @@ import Menu from '../components/Menu'
 import { useSelector } from 'react-redux'
 
 const Layout = memo(() => {
+  const [logged, setLogged] = useState(false)
   const auth = useSelector((store) => store.auth)
-  const logged = auth.status
+  useEffect(() => {
+    setLogged(auth.status)
+  }, [auth.status])
   const isLive = useSelector((store) => store.isLive)
 
   const router = useRouter()
@@ -42,7 +45,7 @@ const Layout = memo(() => {
               display: flex;
               align-items: center;
               font-family: Monospace;
-              margin: 10px ${logged ? '20px' : '5px'};
+              margin: 10px ${logged ? '15px' : '5px'};
               max-width: 100vw;
             }
             a {
