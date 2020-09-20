@@ -1,5 +1,7 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Loader from 'react-loader-spinner'
+import qs from 'qs'
+import axios from 'axios'
 import { useRouter } from 'next/router'
 
 import Head from '../src/components/head'
@@ -17,20 +19,20 @@ import stopStreaming from '../src/utils/stopStreaming'
 import { useSelector, useDispatch } from 'react-redux'
 import setIsLive from '../src/redux/actions/setIsLive'
 
-const ENDPOINT = 'http://localhost:8080/'
+const ENDPOINT = process.env.LIVE_SERVER
 
 function Live() {
-  const [logged] = useAuth('/live')
-
-  const isLive = useSelector((store) => store.isLive)
-  const dispatch = useDispatch()
-
   const mediaRecorderRef = useRef()
-
+  const [logged] = useAuth('/live')
   const [serverConnected, socket] = useSocket({ ENDPOINT })
   const [
     { inputStreamRef, videoRef, canvasRef, requestAnimationRef, cameraEnabled },
   ] = useCamera()
+
+  const router = useRouter()
+
+  const isLive = useSelector((store) => store.isLive)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     return () => {
@@ -38,16 +40,33 @@ function Live() {
     }
   }, [])
 
-  const handleStartStreaming = (e) => {
+  const handleStartStreaming = async (e) => {
     e.preventDefault()
-    startStreaming(
-      videoRef,
-      canvasRef,
-      requestAnimationRef,
-      inputStreamRef,
-      mediaRecorderRef,
-      socket
-    )
+    try {
+      const azureToken = await axios({
+        method: 'post',
+        url: 'https://login.microsoftonline.com/uniminuto.edu/oauth2/token',
+        data: qs.stringify({
+          grant_type: 'client_credentials',
+          client_id: '2d7fcae5-ddd1-4bd1-9be4-784f776a250d ',
+          client_secret: 'UK.da~Y9b52~1.ndpf.5tPBLZi3tzSwjW3',
+          resource: 'https://management.core.windows.net/',
+        }),
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+      })
+      console.log(azureToken)
+    } catch (error) {}
+
+    // startStreaming(
+    //   videoRef,
+    //   canvasRef,
+    //   requestAnimationRef,
+    //   inputStreamRef,
+    //   mediaRecorderRef,
+    //   socket
+    // )
     dispatch(setIsLive(true))
   }
 

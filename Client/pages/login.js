@@ -18,11 +18,12 @@ const Login = memo(() => {
   const router = useRouter()
 
   const [logged] = useAuth('/login')
+  const ENDPOINT = process.env.SERVER
 
   const handleSubmit = (e) => {
     e.preventDefault()
     axios
-      .post(process.env.SERVER + '/login', {
+      .post(ENDPOINT + '/login', {
         email: email.current.value,
         password: password.current.value,
       })

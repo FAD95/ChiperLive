@@ -7,7 +7,7 @@ const child_process = require('child_process')
 io.on('connection', (socket) => {
   console.log(socket.id + ' connected')
   const rtmpUrl =
-    'rtmp://test-chiperlive-usso.channel.media.azure.net:1935/live/1b9c099b47bd4a56b5d79dfec7f20860/mystream1'
+    'rtmp://prueba1-chiperlive-usso.channel.media.azure.net:1935/live/3a88a26fcfc64bb8a08b8204c3a3f0af/prueba'
 
   const ffmpeg = child_process.spawn('ffmpeg', [
     '-i',
