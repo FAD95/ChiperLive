@@ -7,7 +7,7 @@ const config = {
   publicRoute: process.env.PUBLIC_ROUTE || '/app',
   filesRoute: process.env.FILES_ROUTE,
   tokenCaducidad: process.env.TOKEN_CADUCIDAD || '2h',
-  seedJwt: process.env.SEED_JWT || 'ChiperLive43ver',
+  seedJwt: process.env.SEED_JWT || 'top-secret',
 }
 
 module.exports = config
