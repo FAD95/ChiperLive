@@ -6,14 +6,28 @@ function getUser(filterUser) {
   })
 }
 
-function addUser({ names, lastNames, phone, email, password, city, role }) {
+function addUser({
+  firstName,
+  lastName,
+  countryCode,
+  phone,
+  state,
+  city,
+  gender,
+  email,
+  password,
+  role,
+}) {
   const users = {
-    names,
-    lastNames,
+    firstName,
+    lastName,
+    countryCode,
     phone,
+    state,
+    city,
+    gender,
     email,
     password,
-    city,
     role,
   }
   return store.addUser(users)
