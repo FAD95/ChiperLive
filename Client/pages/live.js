@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import Loader from 'react-loader-spinner'
-import qs from 'qs'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
@@ -42,22 +41,10 @@ function Live() {
 
   const handleStartStreaming = async (e) => {
     e.preventDefault()
-    try {
-      const azureToken = await axios({
-        method: 'post',
-        url: 'https://login.microsoftonline.com/uniminuto.edu/oauth2/token',
-        data: qs.stringify({
-          grant_type: 'client_credentials',
-          client_id: '2d7fcae5-ddd1-4bd1-9be4-784f776a250d ',
-          client_secret: 'UK.da~Y9b52~1.ndpf.5tPBLZi3tzSwjW3',
-          resource: 'https://management.core.windows.net/',
-        }),
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-        },
-      })
-      console.log(azureToken)
-    } catch (error) {}
+    const mediaServicesToken = await axios.post(
+      ENDPOINT + '/loginMediaServices'
+    )
+    console.log(mediaServicesToken)
 
     // startStreaming(
     //   videoRef,
