@@ -4,7 +4,7 @@ import io from 'socket.io-client'
 let socket = null
 
 const useSocket = ({ ENDPOINT }) => {
-  const [serverConnected, setServerConnected] = useState(true)
+  const [serverConnected, setServerConnected] = useState(false)
 
   useEffect(() => {
     socket = io(ENDPOINT)
