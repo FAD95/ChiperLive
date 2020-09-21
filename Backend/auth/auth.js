@@ -36,22 +36,15 @@ passport.use(
         controller
           .getUser(email)
           .then((data) => {
-            console.log(data)
-
             if (!data)
               return done(null, false, {
                 message: 'usuario o contraseña incorrecta',
               })
             bcrypt
               .compare(password, data.password)
-              .then((match) => {
-                if (match == true) {
-                  return done(null, data, { message: 'Login successfull' })
-                } else {
-                  done(null, false, {
-                    message: ' usuario o contraseña incorrecta',
-                  })
-                }
+              .then(() => {
+                console.log('User login successfull')
+                return done(null, data, { message: 'Login successfull' })
               })
               .catch((e) => {
                 done(null, false, {
