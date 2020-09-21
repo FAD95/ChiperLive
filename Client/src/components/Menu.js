@@ -54,7 +54,9 @@ const Menu = memo(() => {
                   Configuración
                 </a>
               </li>
-              <li onClick={handleExitSession}>Cerrar sesión</li>
+              <li onClick={handleExitSession}>
+                <a>Cerrar sesión</a>
+              </li>
             </ul>
           </section>
 
@@ -90,6 +92,7 @@ const Menu = memo(() => {
                 color: white;
                 right: 10px;
                 top: 10px;
+                cursor: pointer;
               }
               ul {
                 margin: 10px 0;
@@ -105,6 +108,7 @@ const Menu = memo(() => {
               a {
                 color: white;
                 text-decoration: none;
+                cursor: pointer;
               }
             `}
           </style>

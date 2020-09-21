@@ -24,6 +24,7 @@ const Button = ({ width, height, link, onClick, children }) => {
             padding: 10px 20px;
             text-decoration: none;
             margin-top: 20px;
+            cursor: pointer;
           }
         `}
       </style>

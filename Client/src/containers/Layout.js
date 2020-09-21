@@ -53,6 +53,7 @@ const Layout = memo(() => {
               align-items: center;
               margin-left: 10px;
               text-decoration: none;
+              cursor: pointer;
             }
             h3 {
               color: red;

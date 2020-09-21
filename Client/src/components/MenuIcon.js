@@ -32,6 +32,7 @@ const MenuIcon = memo(({ setIsOpen }) => {
             align-items: center;
             justify-content: space-evenly;
             border-radius: 5px;
+            cursor: pointer;
           }
           div {
             width: 20px;
