@@ -6,7 +6,7 @@ router.post('/', async (req, res, next) => {
   io.on('connection', (socket) => {
     console.log(socket.id + ' connected')
     const rtmpUrl =
-      'rtmp://prueba1-chiperlive-usso.channel.media.azure.net:1935/live/3a88a26fcfc64bb8a08b8204c3a3f0af/prueba'
+      'rtmp://prueba3-chiperlive-usso.channel.media.azure.net:1935/live/3a88a26fcfc64bb8a08b8204c3a3f0af'
 
     const ffmpeg = child_process.spawn('ffmpeg', [
       '-i',
