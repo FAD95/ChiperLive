@@ -1,41 +1,123 @@
-import { useRef, memo } from 'react'
+import { useRef, memo, useState, useEffect } from 'react'
 import Link from 'next/link'
 import axios from 'axios'
+import { useRouter } from 'next/router'
+import { useDispatch } from 'react-redux'
+import setAuth from '../src/redux/actions/setAuth'
+
+import login from '../src/axios/login'
 
 import useAuth from '../src/hooks/useAuth'
 
 import Head from '../src/components/head'
 import Button from '../src/components/Button'
 
+import ColombiaCiudades from '../src/lists/ColombiaCiudades.json'
+import ColombiaDepartamentos from '../src/lists/ColombiaDepartamentos.json'
+import MexicoCiudades from '../src/lists/MexicoCiudades.json'
+import MexicoEstados from '../src/lists/MexicoEstados.json'
+
 const Join = memo(() => {
   const email = useRef()
   const password = useRef()
+  const rePassword = useRef()
   const firstName = useRef()
-  const lastNames = useRef()
+  const lastName = useRef()
   const phone = useRef()
   const city = useRef()
-  const role = useRef()
+  const countryCode = useRef()
+  const gender = useRef()
+  const state = useRef()
+
+  const [ifDepartamentoOrEstado, setIfDepartamentoOrEstado] = useState(
+    'Departamento'
+  )
+  const [actualStateList, setActualStateList] = useState(ColombiaDepartamentos)
+  const [actualState, setActualState] = useState(null)
+  const [cityList, setCityList] = useState([])
 
   const [logged] = useAuth('/join')
 
-  const handleSubmit = (e) => {
+  const dispatch = useDispatch()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (actualState) {
+      switch (countryCode.current.value) {
+        case '57':
+          if (ColombiaCiudades.find((e) => e.name === actualState))
+            setCityList(
+              ColombiaCiudades.find((e) => e.name === actualState).citys
+            )
+          break
+        case '52':
+          if (MexicoCiudades.find((e) => e.name === actualState))
+            setCityList(
+              MexicoCiudades.find((e) => e.name === actualState).citys
+            )
+          break
+        default:
+          break
+      }
+    }
+  }, [actualState])
+
+  const handleCountryChange = () => {
+    state.current.value = ''
+    city.current.value = []
+    switch (countryCode.current.value) {
+      case '52':
+        setIfDepartamentoOrEstado('Estado')
+        setActualStateList(MexicoEstados)
+        break
+      case '57':
+        setIfDepartamentoOrEstado('Departamento')
+        setActualStateList(ColombiaDepartamentos)
+        break
+      default:
+        break
+    }
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    axios
-      .post(process.env.SERVER + '/user', {
-        names: names.current.value,
-        lastNames: lastNames.current.value,
-        phone: phone.current.value,
-        email: email.current.value,
-        city: city.current.value,
-        role: role.current.value,
-        password: password.current.value,
-      })
-      .then(function (response) {
-        console.log(response)
-      })
-      .catch(function (error) {
+    if (rePassword.current.value === password.current.value) {
+      try {
+        const signupRes = await axios.post(process.env.SERVER + '/user', {
+          firstName: firstName.current.value,
+          lastName: lastName.current.value,
+          countryCode: countryCode.current.value,
+          phone: phone.current.value,
+          state: state.current.value,
+          city: city.current.value,
+          gender: gender.current.value,
+          email: email.current.value,
+          password: password.current.value,
+          role: 'CHAMPION',
+        })
+        if (signupRes) {
+          const loginRes = await login({
+            email: email.current.value,
+            password: password.current.value,
+          })
+          dispatch(
+            setAuth({
+              status: true,
+              token: loginRes.data.token,
+            })
+          )
+          router.push('/')
+        }
+      } catch (error) {
+        if (error.response.status === 400) {
+          alert('El email ya esta registrado')
+          return
+        }
         console.error(error)
-      })
+      }
+      return
+    }
+    return alert('Las contraseñas no coinciden')
   }
 
   return (
@@ -53,36 +135,85 @@ const Join = memo(() => {
                 required
               />
             </div>
+
             <div className='input-container'>
               <input
-                ref={lastNames}
+                ref={lastName}
                 type='text'
                 placeholder='Apellidos'
                 required
               />
             </div>
+
             <div className='input-container'>
-              <select name='coutry-code'>
-                <option value='(+57)'>(+57)</option>
-                <option value='(+52)'>(+52)</option>
-              </select>
+              <div className='flex'>
+                <select
+                  ref={countryCode}
+                  name='coutry-code'
+                  onChange={handleCountryChange}
+                >
+                  <option value='57'>(+57)</option>
+                  <option value='52'>(+52)</option>
+                </select>
+                <input
+                  ref={phone}
+                  type='tel'
+                  placeholder='Telefono'
+                  pattern='[0-9]{8,11}'
+                  required
+                />
+              </div>
+            </div>
+
+            <div className='input-container'>
               <input
-                ref={phone}
-                type='tel'
-                placeholder='Telefono'
-                pattern='[0-9]{8,11}'
+                ref={state}
+                type='search'
+                name='findState'
+                list='stateList'
+                placeholder={ifDepartamentoOrEstado}
                 required
+                onChange={() => setActualState(state.current.value)}
               />
             </div>
+            <datalist id='stateList'>
+              {actualStateList.map((state) => (
+                <option key={state} value={state}></option>
+              ))}
+            </datalist>
+            <div className='input-container'>
+              <input
+                ref={city}
+                type='search'
+                name='findCity'
+                list='cityList'
+                placeholder='Ciudad'
+                required
+                disabled={!actualState && 'disabled'}
+              />
+            </div>
+            <datalist id='cityList'>
+              {cityList.map((city) => (
+                <option key={city} value={city}></option>
+              ))}
+            </datalist>
+
+            <div className='input-container'>
+              <div className='flex'>
+                <p>Género: </p>
+                <select id='gender' ref={gender}>
+                  <option value='F'>Femenino</option>
+                  <option value='M'>Masculino</option>
+                  <option value='O'>Otro</option>
+                  <option value='N'>No especifica</option>
+                </select>
+              </div>
+            </div>
+
             <div className='input-container'>
               <input ref={email} type='email' placeholder='e-mail' required />
             </div>
-            <div className='input-container'>
-              <input ref={city} type='text' placeholder='Ciudad' required />
-            </div>
-            <div className='input-container'>
-              <input ref={role} type='text' placeholder='Rol' required />
-            </div>
+
             <div className='input-container'>
               <input
                 ref={password}
@@ -91,6 +222,15 @@ const Join = memo(() => {
                 required
               />
             </div>
+            <div className='input-container'>
+              <input
+                ref={rePassword}
+                type='password'
+                placeholder='Repetir Contraseña'
+                required
+              />
+            </div>
+
             <Button type='submit'>Aceptar</Button>
             <p>¿Ya tienes una cuenta?</p>
             <Link href='/login'>
@@ -123,6 +263,7 @@ const Join = memo(() => {
             width: 400px;
             border-radius: 10px;
             padding: 20px 20px;
+            margin-bottom: 20px;
           }
           h1 {
             font-size: 18px;
@@ -148,6 +289,18 @@ const Join = memo(() => {
           a {
             margin-left: 10px;
             color: orange;
+          }
+          select {
+            background: white !important;
+            height: 40px;
+            border-radius: 15px;
+          }
+          .flex {
+            display: flex;
+          }
+          #gender {
+            margin-left: 5px;
+            width: 100%;
           }
         `}</style>
       </>
