@@ -9,5 +9,6 @@ module.exports = {
   },
   env: {
     SERVER: process.env.SERVER,
+    LIVE_SERVER: process.env.LIVE_SERVER,
   },
 }
