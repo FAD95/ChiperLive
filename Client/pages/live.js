@@ -41,19 +41,19 @@ function Live() {
 
   const handleStartStreaming = async (e) => {
     e.preventDefault()
-    const mediaServicesToken = await axios.post(
-      ENDPOINT + '/loginMediaServices'
-    )
-    console.log(mediaServicesToken)
-
-    // startStreaming(
-    //   videoRef,
-    //   canvasRef,
-    //   requestAnimationRef,
-    //   inputStreamRef,
-    //   mediaRecorderRef,
-    //   socket
+    // const mediaServicesToken = await axios.post(
+    //   ENDPOINT + '/loginMediaServices'
     // )
+    // console.log(mediaServicesToken)
+
+    startStreaming(
+      videoRef,
+      canvasRef,
+      requestAnimationRef,
+      inputStreamRef,
+      mediaRecorderRef,
+      socket
+    )
     dispatch(setIsLive(true))
   }
 
