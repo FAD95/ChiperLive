@@ -1,14 +1,15 @@
 import { useRef, memo } from 'react'
 import Link from 'next/link'
-import axios from 'axios'
-import { useRouter } from 'next/router'
-import useAuth from '../src/hooks/useAuth'
-
 import { useDispatch } from 'react-redux'
 import setAuth from '../src/redux/actions/setAuth'
+import { useRouter } from 'next/router'
+
+import useAuth from '../src/hooks/useAuth'
 
 import Head from '../src/components/head'
 import Button from '../src/components/Button'
+
+import login from '../src/axios/login'
 
 const Login = memo(() => {
   const email = useRef()
@@ -18,32 +19,25 @@ const Login = memo(() => {
   const router = useRouter()
 
   const [logged] = useAuth('/login')
-  const ENDPOINT = process.env.SERVER
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    axios
-      .post(ENDPOINT + '/login', {
+    try {
+      const response = await login({
         email: email.current.value,
         password: password.current.value,
       })
-      .then(function (response) {
-        dispatch(
-          setAuth({
-            status: true,
-            token: response.data.token,
-          })
-        )
-        router.push('/')
-      })
-      .catch(function (error) {
-        if (error.response)
-          if (error.response.status === 401) {
-            alert('E-mail o contraseña incorrectos')
-            return
-          }
-        return alert('Lo sentimos, intentalo de nuevo en unos minutos.')
-      })
+      dispatch(
+        setAuth({
+          status: true,
+          token: response.data.token,
+        })
+      )
+      router.push('/')
+    } catch (error) {
+      alert(error)
+      console.error(error)
+    }
   }
 
   return (
