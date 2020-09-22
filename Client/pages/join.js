@@ -29,6 +29,7 @@ const Join = memo(() => {
   const gender = useRef()
   const state = useRef()
 
+  const [creatingUser, setCreatingUser] = useState(false)
   const [ifDepartamentoOrEstado, setIfDepartamentoOrEstado] = useState(
     'Departamento'
   )
@@ -83,6 +84,7 @@ const Join = memo(() => {
     e.preventDefault()
     if (rePassword.current.value === password.current.value) {
       try {
+        setCreatingUser(true)
         const signupRes = await axios.post(process.env.SERVER + '/user', {
           firstName: firstName.current.value,
           lastName: lastName.current.value,
@@ -106,13 +108,16 @@ const Join = memo(() => {
               token: loginRes.data.token,
             })
           )
+          setCreatingUser(false)
           router.push('/')
         }
       } catch (error) {
         if (error.response.status === 400) {
+          setCreatingUser(false)
           alert('El email ya esta registrado')
           return
         }
+        setCreatingUser(false)
         console.error(error)
       }
       return
@@ -231,7 +236,12 @@ const Join = memo(() => {
               />
             </div>
 
-            <Button type='submit'>Aceptar</Button>
+            <Button type='submit' disabled={creatingUser}>
+              Aceptar
+            </Button>
+            {creatingUser && (
+              <p>Creando usuario. Espere un momento por favor.</p>
+            )}
             <p>¿Ya tienes una cuenta?</p>
             <Link href='/login'>
               <a>Iniciar Sesión</a>
