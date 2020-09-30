@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 
 import { useSelector } from 'react-redux'
 
+import handleExitSession from '../utils/handleExitSession'
+
 const Menu = memo(() => {
   const isLive = useSelector((store) => store.isLive)
   const [isOpen, setIsOpen] = useState(false)
@@ -21,15 +23,6 @@ const Menu = memo(() => {
     } else {
       setIsOpen(false)
       router.push(href)
-    }
-  }
-
-  const handleExitSession = async () => {
-    try {
-      await localStorage.removeItem('state')
-      window.location.replace('/login')
-    } catch (error) {
-      console.error(error)
     }
   }
 
