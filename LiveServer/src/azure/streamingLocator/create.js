@@ -6,7 +6,7 @@ const axios = require('axios')
 const qs = require('qs')
 const config = require('../../../config')
 
-const createAsset = async (info) => {
+const createStreamingLocator = async (info) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'put',
@@ -35,4 +35,4 @@ const createAsset = async (info) => {
   })
 }
 
-module.exports = createAsset
+module.exports = createStreamingLocator
