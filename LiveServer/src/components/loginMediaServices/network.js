@@ -4,6 +4,11 @@ const router = express.Router()
 const response = require('../../network/response')
 const axios = require('axios')
 const qs = require('qs')
+const createLiveEvent = require('../../azure/liveEvent/create')
+const createAsset = require('../../azure/mediaAsset/create')
+const creteLiveOutput = require('../../azure/liveOutput/create')
+const createStreamingLocator = require('../../azure/streamingLocator/create')
+const config = require('../../../config')
 
 router.post('/', async (req, res, next) => {
   try {
@@ -15,15 +20,53 @@ router.post('/', async (req, res, next) => {
       },
       data: qs.stringify({
         grant_type: 'client_credentials',
-        client_id: '2d7fcae5-ddd1-4bd1-9be4-784f776a250d ',
-        client_secret: 'UK.da~Y9b52~1.ndpf.5tPBLZi3tzSwjW3',
+        client_id: config.azureClientId,
+        client_secret: config.azureClientSecret,
         resource: 'https://management.core.windows.net/',
       }),
     })
-    res.send(azureToken.data)
+
+    if (azureToken.data.access_token) console.log('Logged with azure.')
+    console.log(req.body)
+
+    await createLiveEvent({
+      token: azureToken.data.access_token,
+      userID: req.body.userID,
+      liveName: req.body.liveName,
+    })
+
+    await createAsset({
+      token: azureToken.data.access_token,
+      userID: req.body.userID,
+      liveName: req.body.liveName,
+    })
+
+    await creteLiveOutput({
+      token: azureToken.data.access_token,
+      userID: req.body.userID,
+      liveName: req.body.liveName,
+    })
+
+    await createStreamingLocator({
+      token: azureToken.data.access_token,
+      userID: req.body.userID,
+    })
+
+    const streamingLocator = await axios({
+      method: 'get',
+      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaservices/${config.azureAccountName}/liveEvents/${req.body.userID}?api-version=2018-07-01`,
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${azureToken.data.access_token}`,
+      },
+    })
+
+    const RTMP = streamingLocator.data.properties.input.endpoints[0].url
+
+    res.send('done!')
   } catch (error) {
-    res.status(500).send('No se pudo conectar con la nube')
-    console.error(error)
+    res.status(500).send('Ocurrio un error inesperado.')
+    next(error)
   }
 })
 
