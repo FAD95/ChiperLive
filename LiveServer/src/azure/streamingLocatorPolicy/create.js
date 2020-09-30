@@ -8,7 +8,7 @@ const config = require('../../../config')
 
 const currentLives = {}
 
-const createAsset = async (info) => {
+const createStreamingPolicy = async (info) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'put',
@@ -41,4 +41,4 @@ const createAsset = async (info) => {
   })
 }
 
-module.exports = createAsset
+module.exports = createStreamingPolicy
