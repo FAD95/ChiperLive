@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Loader from 'react-loader-spinner'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -21,7 +21,9 @@ import setIsLive from '../src/redux/actions/setIsLive'
 const ENDPOINT = process.env.LIVE_SERVER
 
 function Live() {
+  const liveName = useRef()
   const mediaRecorderRef = useRef()
+
   const [logged] = useAuth('/live')
   const [serverConnected, socket] = useSocket({ ENDPOINT })
   const [
@@ -31,21 +33,83 @@ function Live() {
   const router = useRouter()
 
   const isLive = useSelector((store) => store.isLive)
+  const userID = useSelector((store) => store.currentUser._id)
+
   const dispatch = useDispatch()
 
   useEffect(() => {
-    return () => {
+    return async () => {
+      try {
+        const azureToken = await axios({
+          method: 'post',
+          url: 'https://login.microsoftonline.com/uniminuto.edu/oauth2/token',
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+          data: qs.stringify({
+            grant_type: 'client_credentials',
+            client_id: config.azureClientId,
+            client_secret: config.azureClientSecret,
+            resource: 'https://management.core.windows.net/',
+          }),
+        })
+        // Delete streamingLocator
+        await axios({
+          method: 'DELETE',
+          url: `https://management.azure.com/subscriptions/3a88a26f-cfc6-4bb8-a08b-8204c3a3f0af/resourceGroups/chiperlive/providers/Microsoft.Media/mediaServices/chiperlive/streamingLocators/${userID}StreamingLocator?api-version=2018-07-01`,
+          data: {
+            Authorization: `Bearer ${azureToken}`,
+          },
+        })
+
+        // Delete liveOutput
+        await axios({
+          method: 'DELETE',
+          url: `https://management.azure.com/subscriptions/3a88a26f-cfc6-4bb8-a08b-8204c3a3f0af/resourceGroups/chiperlive/providers/Microsoft.Media/mediaservices/chiperlive/liveEvents/${userID}/liveOutputs/${userID}Output?api-version=2018-07-01`,
+          data: {
+            Authorization: `Bearer ${azureToken}`,
+          },
+        })
+
+        // Delete asset
+        await axios({
+          method: 'DELETE',
+          url: `https://management.azure.com/subscriptions/3a88a26f-cfc6-4bb8-a08b-8204c3a3f0af/resourceGroups/chiperlive/providers/Microsoft.Media/mediaServices/chiperlive/assets/${userID}Asset?api-version=2018-07-01`,
+          data: {
+            Authorization: `Bearer ${azureToken}`,
+          },
+        })
+
+        // Delete liveEvent
+        await axios({
+          method: 'DELETE',
+          url: `https://management.azure.com/subscriptions/3a88a26f-cfc6-4bb8-a08b-8204c3a3f0af/resourceGroups/chiperlive/providers/Microsoft.Media/mediaservices/chiperlive/liveEvents/${userID}?api-version=2018-07-01`,
+          data: {
+            Authorization: `Bearer ${azureToken}`,
+          },
+        })
+      } catch (error) {}
       dispatch(setIsLive(false))
     }
   }, [])
 
   const handleStartStreaming = async (e) => {
     e.preventDefault()
-    // const mediaServicesToken = await axios.post(
-    //   ENDPOINT + '/loginMediaServices'
-    // )
-    // console.log(mediaServicesToken)
+    // if (!liveName.current.value) {
+    //   alert('Debe asignarle un nombre al live')
+    //   return
+    // }
+    // try {
+    //   await axios.post(ENDPOINT + '/loginMediaServices', {
+    //     userID,
+    //     liveName: liveName.current.value,
+    //   })
 
+    //   socket.emit('join', { userID }, () => {})
+
+    // } catch (error) {
+    //   console.error(error)
+    // }
     startStreaming(
       videoRef,
       canvasRef,
@@ -85,6 +149,8 @@ function Live() {
 
         <Video videoRef={videoRef} />
         <canvas ref={canvasRef} style={{ display: 'none' }} />
+
+        <input type='text' ref={liveName} />
 
         {!serverConnected ? (
           <InfoBottom>
