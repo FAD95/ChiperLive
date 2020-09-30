@@ -1,12 +1,39 @@
-import { memo } from 'react'
+import { useEffect, memo } from 'react'
+import axios from 'axios'
 
 import useAuth from '../src/hooks/useAuth'
 
 import Head from '../src/components/head'
 import Button from '../src/components/Button'
 
+import getUser from '../src/axios/getUser'
+
+import { useSelector, useDispatch } from 'react-redux'
+import setCurrentUser from '../src/redux/actions/setCurrentUser'
+
 const Index = memo(() => {
   const [logged] = useAuth('/index')
+
+  const token = useSelector((store) => store.auth.token)
+  const email = useSelector((store) => store.auth.email)
+  const currentUser = useSelector((store) => store.currentUser)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (Object.entries(currentUser).length === 0) {
+      const getCurrentUser = async (token) => {
+        try {
+          const user = await getUser({ token, email })
+          console.log(user)
+          dispatch(setCurrentUser(user.data.body[0]))
+        } catch (error) {
+          console.error(error)
+        }
+      }
+      getCurrentUser(token)
+    }
+  }, [])
+
   return (
     logged && (
       <>
