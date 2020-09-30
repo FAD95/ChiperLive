@@ -31,6 +31,7 @@ const Login = memo(() => {
         setAuth({
           status: true,
           token: response.data.token,
+          email: email.current.value,
         })
       )
       router.push('/')
