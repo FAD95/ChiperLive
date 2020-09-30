@@ -2,7 +2,7 @@ const express = require('express')
 const axios = require('axios')
 const config = require('../../../config')
 
-const createAsset = async (info) => {
+const createMediaAsset = async (info) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'put',
@@ -30,4 +30,4 @@ const createAsset = async (info) => {
   })
 }
 
-module.exports = createAsset
+module.exports = createMediaAsset
