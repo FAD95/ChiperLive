@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 
 const useCamera = () => {
-  const [cameraEnabled, setCameraEnabled] = useState(false)
+  const [cameraEnabled, setCameraEnabled] = useState(true)
   const inputStreamRef = useRef()
   const videoRef = useRef()
   const canvasRef = useRef()
