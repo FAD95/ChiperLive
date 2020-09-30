@@ -25,7 +25,7 @@ const startStreaming = (
 
   mediaRecorderRef.current = new MediaRecorder(outputStream, {
     mimeType: 'video/webm',
-    videoBitsPerSecond: 3000000
+    videoBitsPerSecond: 3000000,
   })
 
   mediaRecorderRef.current.addEventListener('dataavailable', (e) => {
