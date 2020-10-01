@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
+import { useSelector } from 'react-redux'
 
 let socket = null
 
 const useSocket = ({ ENDPOINT }) => {
   const [serverConnected, setServerConnected] = useState(false)
+  const currentUser = useSelector((store) => store.currentUser)
 
   useEffect(() => {
-    socket = io(ENDPOINT)
-    socket.on('connect', () => {
+    const userID = currentUser._id
+    socket = io.connect(`${ENDPOINT}/${userID}`)
+    socket.on('welcome', (res) => {
+      console.log(res)
       setServerConnected(true)
-      console.log('connected with server')
     })
+
     return () => {
       socket.disconnect()
       socket.off()
