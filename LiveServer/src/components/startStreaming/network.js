@@ -1,72 +1,49 @@
 const express = require('express')
 const router = express.Router()
-const child_process = require('child_process')
+const axios = require('axios')
+const config = require('../../../config')
+const qs = require('qs')
+
+const getToken = async () => {
+  try {
+    const azureToken = await axios({
+      method: 'post',
+      url: 'https://login.microsoftonline.com/uniminuto.edu/oauth2/token',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+      },
+      data: qs.stringify({
+        grant_type: 'client_credentials',
+        client_id: config.azureClientId,
+        client_secret: config.azureClientSecret,
+        resource: 'https://management.core.windows.net/',
+      }),
+    })
+    return azureToken
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 router.post('/', async (req, res, next) => {
-  io.on('connection', (socket) => {
-    console.log(socket.id + ' connected')
-    const rtmpUrl =
-      'rtmp://prueba3-chiperlive-usso.channel.media.azure.net:1935/live/3a88a26fcfc64bb8a08b8204c3a3f0af'
+  let { userID } = req.body
 
-    const ffmpeg = child_process.spawn('ffmpeg', [
-      '-i',
-      '-',
-      '-c:a',
-      'aac',
-      '-b:a',
-      '128k',
-      '-ar',
-      '44100',
-      '-r',
-      '30',
-      '-g',
-      '60',
-      '-keyint_min',
-      '60',
-      '-b:v',
-      '400000',
-      '-c:v',
-      'libx264',
-      '-preset',
-      'medium',
-      '-bufsize',
-      '400k',
-      '-maxrate',
-      '400k',
-      '-f',
-      'flv',
-      rtmpUrl,
-    ])
+  try {
+    const azureToken = await getToken()
 
-    ffmpeg.on('close', (code, signal) => {
-      console.log(
-        'FFmpeg child process closed, code ' + code + ', signal ' + signal
-      )
-      socket.disconnect(true)
+    await axios({
+      method: 'post',
+      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaservices/${config.azureAccountName}/liveEvents/${userID}/start?api-version=2018-07-01`,
+      headers: {
+        Authorization: `Bearer ${azureToken.data.access_token}`,
+      },
     })
 
-    ffmpeg.stdin.on('error', (e) => {
-      console.log('FFmpeg STDIN Error', e)
-    })
-
-    ffmpeg.stderr.on('data', (data) => {
-      console.log(data.toString())
-      console.log('FFmpeg STDERR:', data.toString())
-    })
-
-    socket.on('data', (msg) => {
-      if (Buffer.isBuffer(msg)) {
-        ffmpeg.stdin.write(msg)
-      }
-    })
-
-    socket.on('close', (e) => {
-      ffmpeg.kill('SIGINT')
-    })
-    socket.on('disconnect', () => {
-      console.log('disconnected')
-    })
-  })
+    res.status(200).send('Ya puedes transmitir')
+  } catch (error) {
+    console.log('error')
+    console.error(error)
+  }
 })
 
 module.exports = router
