@@ -5,14 +5,19 @@ const response = require('../../network/response')
 const axios = require('axios')
 const qs = require('qs')
 const createLiveEvent = require('../../azure/liveEvent/create')
+const getLiveEvent = require('../../azure/liveEvent/get')
 const createAsset = require('../../azure/mediaAsset/create')
 const creteLiveOutput = require('../../azure/liveOutput/create')
 const createStreamingLocator = require('../../azure/streamingLocator/create')
 const config = require('../../../config')
 
 router.post('/', async (req, res, next) => {
+  const { userID, liveName } = req.body
+
+  let token = ''
+
   try {
-    const azureToken = await axios({
+    const azureTokenResponse = await axios({
       method: 'post',
       url: 'https://login.microsoftonline.com/uniminuto.edu/oauth2/token',
       headers: {
@@ -26,47 +31,73 @@ router.post('/', async (req, res, next) => {
       }),
     })
 
-    if (azureToken.data.access_token) console.log('Logged with azure.')
-    console.log(req.body)
+    token = azureTokenResponse.data.access_token
 
-    await createLiveEvent({
-      token: azureToken.data.access_token,
-      userID: req.body.userID,
-      liveName: req.body.liveName,
-    })
+    if (token !== '') console.log('Logged with azure.')
 
-    await createAsset({
-      token: azureToken.data.access_token,
-      userID: req.body.userID,
-      liveName: req.body.liveName,
-    })
+    await getLiveEvent({ token, userID })
 
     await creteLiveOutput({
-      token: azureToken.data.access_token,
-      userID: req.body.userID,
-      liveName: req.body.liveName,
-    })
-
-    await createStreamingLocator({
-      token: azureToken.data.access_token,
-      userID: req.body.userID,
+      token,
+      userID,
+      liveName,
     })
 
     const streamingLocator = await axios({
       method: 'get',
-      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaservices/${config.azureAccountName}/liveEvents/${req.body.userID}?api-version=2018-07-01`,
+      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaservices/${config.azureAccountName}/liveEvents/${userID}?api-version=2018-07-01`,
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${azureToken.data.access_token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
 
-    const RTMP = streamingLocator.data.properties.input.endpoints[0].url
+    rtmpUrl = streamingLocator.data.properties.input.endpoints[0].url + '/p'
 
-    res.send('done!')
+    res.status(200).send(rtmpUrl)
   } catch (error) {
-    res.status(500).send('Ocurrio un error inesperado.')
-    next(error)
+    if (error.response.status === 404) {
+      try {
+        await createLiveEvent({
+          token,
+          userID,
+          liveName,
+        })
+
+        await createAsset({
+          token,
+          userID,
+          liveName,
+        })
+
+        await creteLiveOutput({
+          token,
+          userID,
+          liveName,
+        })
+
+        await createStreamingLocator({
+          token,
+          userID,
+        })
+
+        const streamingLocator = await axios({
+          method: 'get',
+          url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaservices/${config.azureAccountName}/liveEvents/${req.body.userID}?api-version=2018-07-01`,
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        rtmpUrl =
+          streamingLocator.data.properties.input.endpoints[0].url + '/live'
+
+        res.status(200).send(rtmpUrl)
+      } catch (error) {
+        console.error(error.response.data.error.code)
+      }
+    } else console.error(error.response.data.error.code)
   }
 })
 
