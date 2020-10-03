@@ -2,18 +2,10 @@ const server = require('./server')
 const config = require('./config')
 const io = require('socket.io')(server)
 const child_process = require('child_process')
+const axios = require('axios')
 
-const { addUser, removeUser, getUser } = require('./src/network/users')
-
-const workspaces = io.of(/^\/\w+$/)
-
-workspaces.on('connection', (socket) => {
-  const workspace = socket.nsp
-
-  workspace.emit('welcome', `${workspace.name} connected`)
-
-  const rtmpUrl =
-    'rtmp://prueba3-chiperlive-usso.channel.media.azure.net:1935/live/3a88a26fcfc64bb8a08b8204c3a3f0af/p'
+io.on('connection', (socket) => {
+  const rtmpUrl = socket.handshake.query.url
 
   const ffmpeg = child_process.spawn('ffmpeg', [
     '-i',
@@ -44,7 +36,6 @@ workspaces.on('connection', (socket) => {
     'flv',
     rtmpUrl,
   ])
-
   ffmpeg.on('close', (code, signal) => {
     console.log(
       'FFmpeg child process closed, code ' + code + ', signal ' + signal
@@ -60,25 +51,15 @@ workspaces.on('connection', (socket) => {
     console.log('FFmpeg STDERR:', data.toString())
   })
 
-  workspace.on('data', (msg) => {
+  socket.on('data', (msg) => {
     if (Buffer.isBuffer(msg)) {
       ffmpeg.stdin.write(msg)
     }
   })
 
-  workspace.on('close', (e) => {
+  socket.on('close', (e) => {
     ffmpeg.kill('SIGINT')
   })
-
-  workspace.on('disconnect', () => {
-    console.log(`User ${socket.id} has left`)
-    const user = removeUser(socket.id)
-  })
-})
-
-// this middleware will be assigned to each namespace
-workspaces.use((socket, next) => {
-  next()
 })
 
 server.listen(config.port, () => {
