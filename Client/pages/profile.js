@@ -1,7 +1,7 @@
 import useAuth from '../src/hooks/useAuth'
 import Head from '../src/components/head'
 
-export default function FirstPost() {
+export default function FirstPost () {
   const [logged] = useAuth('/profile')
   return (
     logged && (

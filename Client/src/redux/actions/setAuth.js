@@ -1,9 +1,9 @@
 export const type = 'SET_AUTH'
 
-function setAuth(payload) {
+function setAuth (payload) {
   return {
     type,
-    payload,
+    payload
   }
 }
 

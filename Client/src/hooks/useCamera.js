@@ -33,7 +33,7 @@ const useCamera = () => {
       try {
         inputStreamRef.current = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video: { facingMode: 'user' },
+          video: { facingMode: 'user' }
         })
       } catch (error) {
         console.error(error)
@@ -56,10 +56,11 @@ const useCamera = () => {
     })
 
     return () => {
-      if (inputStreamRef.current)
+      if (inputStreamRef.current) {
         inputStreamRef.current.getTracks().forEach((track) => {
           track.stop()
         })
+      }
       setCameraEnabled(false)
     }
   }, [])

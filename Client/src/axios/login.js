@@ -7,16 +7,17 @@ const Login = ({ email, password }) => {
     axios
       .post(ENDPOINT + '/login', {
         email,
-        password,
+        password
       })
       .then(function (response) {
         resolve(response)
       })
       .catch(function (error) {
-        if (error.response)
+        if (error.response) {
           if (error.response.status === 401) {
             reject('E-mail o contraseña incorrectos')
           }
+        }
         reject(error)
       })
   })

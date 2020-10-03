@@ -6,7 +6,7 @@ import currentUser from './currentUser'
 const reducer = combineReducers({
   isLive,
   auth,
-  currentUser,
+  currentUser
 })
 
 export default reducer

@@ -1,7 +1,7 @@
 import { memo } from 'react'
 
 const MenuIcon = memo(({ setIsOpen }) => {
-  function handleClick() {
+  function handleClick () {
     setIsOpen(true)
   }
   return (

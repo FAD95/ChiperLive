@@ -25,13 +25,13 @@ const Login = memo(() => {
     try {
       const response = await login({
         email: email.current.value,
-        password: password.current.value,
+        password: password.current.value
       })
       dispatch(
         setAuth({
           status: true,
           token: response.data.token,
-          email: email.current.value,
+          email: email.current.value
         })
       )
       router.push('/')
@@ -114,7 +114,8 @@ const Login = memo(() => {
             margin-left: 10px;
             color: orange;
           }
-        `}</style>
+        `}
+        </style>
       </>
     )
   )

@@ -1,9 +1,9 @@
 export const type = 'SET_CURRENT_USER'
 
-function setCurrentUser(payload) {
+function setCurrentUser (payload) {
   return {
     type,
-    payload,
+    payload
   }
 }
 

@@ -20,7 +20,7 @@ import setIsLive from '../src/redux/actions/setIsLive'
 
 const ENDPOINT = process.env.LIVE_SERVER
 
-function Live() {
+function Live () {
   const liveName = useRef()
   const mediaRecorderRef = useRef()
 
@@ -45,8 +45,8 @@ function Live() {
           method: 'DELETE',
           url: `https://management.azure.com/subscriptions/3a88a26f-cfc6-4bb8-a08b-8204c3a3f0af/resourceGroups/chiperlive/providers/Microsoft.Media/mediaServices/chiperlive/streamingLocators/${userID}StreamingLocator?api-version=2018-07-01`,
           data: {
-            Authorization: `Bearer ${azureToken}`,
-          },
+            Authorization: `Bearer ${azureToken}`
+          }
         })
 
         // Delete liveOutput
@@ -54,8 +54,8 @@ function Live() {
           method: 'DELETE',
           url: `https://management.azure.com/subscriptions/3a88a26f-cfc6-4bb8-a08b-8204c3a3f0af/resourceGroups/chiperlive/providers/Microsoft.Media/mediaservices/chiperlive/liveEvents/${userID}/liveOutputs/${userID}Output?api-version=2018-07-01`,
           data: {
-            Authorization: `Bearer ${azureToken}`,
-          },
+            Authorization: `Bearer ${azureToken}`
+          }
         })
 
         // Delete asset
@@ -63,8 +63,8 @@ function Live() {
           method: 'DELETE',
           url: `https://management.azure.com/subscriptions/3a88a26f-cfc6-4bb8-a08b-8204c3a3f0af/resourceGroups/chiperlive/providers/Microsoft.Media/mediaServices/chiperlive/assets/${userID}Asset?api-version=2018-07-01`,
           data: {
-            Authorization: `Bearer ${azureToken}`,
-          },
+            Authorization: `Bearer ${azureToken}`
+          }
         })
 
         // Delete liveEvent
@@ -72,8 +72,8 @@ function Live() {
           method: 'DELETE',
           url: `https://management.azure.com/subscriptions/3a88a26f-cfc6-4bb8-a08b-8204c3a3f0af/resourceGroups/chiperlive/providers/Microsoft.Media/mediaservices/chiperlive/liveEvents/${userID}?api-version=2018-07-01`,
           data: {
-            Authorization: `Bearer ${azureToken}`,
-          },
+            Authorization: `Bearer ${azureToken}`
+          }
         })
       } catch (error) {}
       dispatch(setIsLive(false))
@@ -89,7 +89,7 @@ function Live() {
     try {
       const res = await axios.post(ENDPOINT + '/loginMediaServices', {
         userID,
-        liveName: liveName.current.value,
+        liveName: liveName.current.value
       })
       console.log(res.data)
       setRtmpUrl(res.data)
@@ -116,8 +116,8 @@ function Live() {
         method: 'post',
         url: 'http://localhost:8080/startStreaming',
         data: {
-          userID,
-        },
+          userID
+        }
       })
       console.log(res)
       startStreaming(canvasRef, inputStreamRef, mediaRecorderRef, rtmpUrl)

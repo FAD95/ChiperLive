@@ -3,7 +3,7 @@ import { type as SET_AUTH } from '../actions/setAuth'
 const defaultState = {
   status: false,
   token: '',
-  userID: '',
+  userID: ''
 }
 
 const auth = (state = defaultState, { type, payload }) => {

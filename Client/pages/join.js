@@ -46,16 +46,18 @@ const Join = memo(() => {
     if (actualState) {
       switch (countryCode.current.value) {
         case '57':
-          if (ColombiaCiudades.find((e) => e.name === actualState))
+          if (ColombiaCiudades.find((e) => e.name === actualState)) {
             setCityList(
               ColombiaCiudades.find((e) => e.name === actualState).citys
             )
+          }
           break
         case '52':
-          if (MexicoCiudades.find((e) => e.name === actualState))
+          if (MexicoCiudades.find((e) => e.name === actualState)) {
             setCityList(
               MexicoCiudades.find((e) => e.name === actualState).citys
             )
+          }
           break
         default:
           break
@@ -95,17 +97,17 @@ const Join = memo(() => {
           gender: gender.current.value,
           email: email.current.value,
           password: password.current.value,
-          role: 'CHAMPION',
+          role: 'CHAMPION'
         })
         if (signupRes) {
           const loginRes = await login({
             email: email.current.value,
-            password: password.current.value,
+            password: password.current.value
           })
           dispatch(
             setAuth({
               status: true,
-              token: loginRes.data.token,
+              token: loginRes.data.token
             })
           )
           setCreatingUser(false)
@@ -183,7 +185,7 @@ const Join = memo(() => {
             </div>
             <datalist id='stateList'>
               {actualStateList.map((state) => (
-                <option key={state} value={state}></option>
+                <option key={state} value={state} />
               ))}
             </datalist>
             <div className='input-container'>
@@ -199,7 +201,7 @@ const Join = memo(() => {
             </div>
             <datalist id='cityList'>
               {cityList.map((city) => (
-                <option key={city} value={city}></option>
+                <option key={city} value={city} />
               ))}
             </datalist>
 
@@ -312,7 +314,8 @@ const Join = memo(() => {
             margin-left: 5px;
             width: 100%;
           }
-        `}</style>
+        `}
+        </style>
       </>
     )
   )

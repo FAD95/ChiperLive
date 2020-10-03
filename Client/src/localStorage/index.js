@@ -12,7 +12,7 @@ export const loadState = () => {
 }
 export const saveState = async (state) => {
   try {
-    let serializedData = await JSON.stringify(state)
+    const serializedData = await JSON.stringify(state)
     localStorage.setItem('state', serializedData)
   } catch (error) {
     // Acá podemos capturar o crear cualquier log que deseemos en caso de que falle el salvado en el storage.
