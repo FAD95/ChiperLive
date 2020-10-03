@@ -24,11 +24,11 @@ function Live() {
   const liveName = useRef()
   const mediaRecorderRef = useRef()
 
+  const [rtmpUrl, setRtmpUrl] = useState('')
+
   const [logged] = useAuth('/live')
-  const [serverConnected, socket] = useSocket({ ENDPOINT })
-  const [
-    { inputStreamRef, videoRef, canvasRef, requestAnimationRef, cameraEnabled },
-  ] = useCamera()
+
+  const [{ inputStreamRef, videoRef, canvasRef, cameraEnabled }] = useCamera()
 
   const router = useRouter()
 
@@ -40,19 +40,6 @@ function Live() {
   useEffect(() => {
     return async () => {
       try {
-        const azureToken = await axios({
-          method: 'post',
-          url: 'https://login.microsoftonline.com/uniminuto.edu/oauth2/token',
-          headers: {
-            'content-type': 'application/x-www-form-urlencoded',
-          },
-          data: qs.stringify({
-            grant_type: 'client_credentials',
-            client_id: config.azureClientId,
-            client_secret: config.azureClientSecret,
-            resource: 'https://management.core.windows.net/',
-          }),
-        })
         // Delete streamingLocator
         await axios({
           method: 'DELETE',
@@ -95,30 +82,20 @@ function Live() {
 
   const handleStartStreaming = async (e) => {
     e.preventDefault()
-    // if (!liveName.current.value) {
-    //   alert('Debe asignarle un nombre al live')
-    //   return
-    // }
-    // try {
-    //   await axios.post(ENDPOINT + '/loginMediaServices', {
-    //     userID,
-    //     liveName: liveName.current.value,
-    //   })
-
-    //   socket.emit('join', { userID }, () => {})
-
-    // } catch (error) {
-    //   console.error(error)
-    // }
-    startStreaming(
-      videoRef,
-      canvasRef,
-      requestAnimationRef,
-      inputStreamRef,
-      mediaRecorderRef,
-      socket
-    )
-    dispatch(setIsLive(true))
+    if (!liveName.current.value) {
+      alert('Debe asignarle un nombre al live')
+      return
+    }
+    try {
+      const res = await axios.post(ENDPOINT + '/loginMediaServices', {
+        userID,
+        liveName: liveName.current.value,
+      })
+      console.log(res.data)
+      setRtmpUrl(res.data)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const finishLive = (e) => {
@@ -128,6 +105,25 @@ function Live() {
       router.push('/')
     } else {
       console.log('Nothing happened')
+    }
+  }
+
+  const handlePlay = async (e) => {
+    e.preventDefault()
+
+    try {
+      const res = await axios({
+        method: 'post',
+        url: 'http://localhost:8080/startStreaming',
+        data: {
+          userID,
+        },
+      })
+      console.log(res)
+      startStreaming(canvasRef, inputStreamRef, mediaRecorderRef, rtmpUrl)
+      dispatch(setIsLive(true))
+    } catch (error) {
+      console.error(error.response)
     }
   }
 
@@ -152,11 +148,11 @@ function Live() {
 
         <input type='text' ref={liveName} />
 
-        {!serverConnected ? (
-          <InfoBottom>
-            <p>Conectando con el servidor...</p>
-          </InfoBottom>
-        ) : !cameraEnabled ? (
+        <button onClick={(e) => handlePlay(e)}>
+          Iniciar transmison en azure
+        </button>
+
+        {!cameraEnabled ? (
           <InfoBottom>
             <p>Habilitando camara...</p>
           </InfoBottom>
