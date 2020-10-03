@@ -2,9 +2,7 @@ const express = require('express')
 const axios = require('axios')
 const config = require('../../../config')
 
-const currentLives = {}
-
-const createLiveEvent = async (info) => {
+const createLiveEvent = (info) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'put',
@@ -59,9 +57,9 @@ const createLiveEvent = async (info) => {
         console.log('Live event created')
         resolve(response)
       })
-      .catch((err) => {
+      .catch((error) => {
         console.error('Cant create a live event')
-        reject(err)
+        reject(error)
       })
   })
 }

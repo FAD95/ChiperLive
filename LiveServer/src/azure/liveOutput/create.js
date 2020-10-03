@@ -33,9 +33,9 @@ const createLiveOutput = async (info) => {
         console.log('LiveOutput created')
         resolve(response)
       })
-      .catch((err) => {
+      .catch((error) => {
         console.error('Cant create LiveOutput')
-        reject(err)
+        reject(error)
       })
   })
 }

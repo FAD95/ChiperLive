@@ -23,9 +23,9 @@ const createMediaAsset = async (info) => {
         console.log('Asset created')
         resolve(response)
       })
-      .catch((err) => {
-        console.error('Cant create asset')
-        reject(err)
+      .catch((error) => {
+        console.log('Cant create asset')
+        reject(error)
       })
   })
 }
