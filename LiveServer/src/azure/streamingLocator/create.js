@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken')
 const router = express.Router()
 const response = require('../../network/response')
 const axios = require('axios')
-const qs = require('qs')
 const config = require('../../../config')
 
 const createStreamingLocator = async (info) => {
@@ -28,9 +27,9 @@ const createStreamingLocator = async (info) => {
         console.log('Streaming locator created')
         resolve(response)
       })
-      .catch((err) => {
-        console.error('Cant create streaming locator')
-        reject(err)
+      .catch((error) => {
+        console.log('Cant create streaming locator')
+        reject(error)
       })
   })
 }
