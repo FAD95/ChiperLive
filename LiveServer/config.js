@@ -6,6 +6,7 @@ const config = {
   publicRoute: process.env.PUBLIC_ROUTE || '/app',
   tokenCaducidad: process.env.TOKEN_CADUCIDAD || '2h',
   seedJwt: process.env.SEED_JWT || 'ChiperLive43ver',
+  azureTenantId: process.env.AZURE_TENANT_ID,
   azureSubscriptionId:
     process.env.AZURE_SUBSCRIPTION_ID || 0000 - 0000 - 0000 - 0000,
   azureResourceGroupName: process.env.AZURE_RESOURCE_GROUP_NAME || 'default',
@@ -13,6 +14,8 @@ const config = {
   azureClientId: process.env.AZURE_CLIENT_ID || 'default',
   azureClientSecret: process.env.AZURE_CLIENT_SECRET || 'default',
   azureStorageAccountName: process.env.AZURE_STORAGE_ACCOUNT_NAME || 'default',
+  azureRegion: process.env.AZURE_REGION || '',
+  azureStreamingPolicyName : process.env.AZURE_STREAMING_POLICY_NAME || 'default'
 }
 
 module.exports = config
