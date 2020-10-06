@@ -1,27 +1,29 @@
-const express = require('express')
 const axios = require('axios')
 const config = require('../../../config')
 
-const createMediaAsset = async (info) => {
+const createMediaAsset = async ({ token, liveName, userId }) => {
+  const d = new Date()
+  const date = d.toLocaleDateString() + '-' + d.getTime()
+  const assetName = userId + '-' + date
   return new Promise((resolve, reject) => {
     axios({
       method: 'put',
-      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaServices/${config.azureAccountName}/assets/${info.userID}Asset?api-version=2018-07-01`,
+      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaServices/${config.azureAccountName}/assets/${assetName}?api-version=2018-07-01`,
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${info.token}`,
+        Authorization: `Bearer ${token}`
       },
       data: {
         properties: {
-          description: info.liveName,
-          storageAccountName: 'chiperlive',
-          container: `container`,
-        },
-      },
+          description: liveName,
+          storageAccountName: config.azureStorageAccountName,
+          container: assetName
+        }
+      }
     })
-      .then((response) => {
+      .then(() => {
         console.log('Asset created')
-        resolve(response)
+        resolve(assetName)
       })
       .catch((error) => {
         console.log('Cant create asset')
