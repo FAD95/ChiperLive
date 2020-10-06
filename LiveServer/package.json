@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app",
-    "dev": "nodemon app"
+    "dev": "nodemon app",
+    "lint": "standard",
+    "lint:fix": "standard --fix"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +23,7 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "standard": "^14.3.4"
   }
 }
