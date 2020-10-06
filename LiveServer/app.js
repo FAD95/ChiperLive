@@ -2,7 +2,6 @@ const server = require('./server')
 const config = require('./config')
 const io = require('socket.io')(server)
 const child_process = require('child_process')
-const axios = require('axios')
 
 io.on('connection', (socket) => {
   const rtmpUrl = socket.handshake.query.url
@@ -34,7 +33,7 @@ io.on('connection', (socket) => {
     '400k',
     '-f',
     'flv',
-    rtmpUrl,
+    rtmpUrl
   ])
   ffmpeg.on('close', (code, signal) => {
     console.log(
