@@ -1,16 +1,15 @@
-const express = require('express')
 const axios = require('axios')
 const config = require('../../../config')
 
-const getLiveEvent = (info) => {
+const getStreamingLocator = ({ token, userId }) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'get',
-      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaservices/${config.azureAccountName}/liveEvents/${info.userID}?api-version=2018-07-01`,
+      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaservices/${config.azureAccountName}/liveEvents/${userId}?api-version=2018-07-01`,
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${info.token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => {
         console.log('Live event exist')
@@ -23,4 +22,4 @@ const getLiveEvent = (info) => {
   })
 }
 
-module.exports = getLiveEvent
+module.exports = getStreamingLocator
