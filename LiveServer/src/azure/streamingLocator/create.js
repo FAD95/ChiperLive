@@ -1,27 +1,23 @@
-const express = require('express')
-const jwt = require('jsonwebtoken')
-const router = express.Router()
-const response = require('../../network/response')
 const axios = require('axios')
 const config = require('../../../config')
 
-const createStreamingLocator = async (info) => {
+const createStreamingLocator = async ({ token, userId, assetName }) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'put',
-      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaServices/${config.azureAccountName}/streamingLocators/${info.userID}StreamingLocator?api-version=2018-07-01`,
+      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaServices/${config.azureAccountName}/streamingLocators/${userId}StreamingLocator?api-version=2018-07-01`,
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${info.token}`,
+        Authorization: `Bearer ${token}`
       },
       data: {
         properties: {
-          streamingPolicyName: 'streamingPolicy3',
-          assetName: `${info.userID}Asset`,
+          streamingPolicyName: config.azureStreamingPolicyName,
+          assetName: assetName,
           contentKeys: [],
-          filters: [],
-        },
-      },
+          filters: []
+        }
+      }
     })
       .then((response) => {
         console.log('Streaming locator created')
