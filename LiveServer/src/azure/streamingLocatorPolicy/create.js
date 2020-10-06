@@ -1,21 +1,14 @@
-const express = require('express')
-const jwt = require('jsonwebtoken')
-const router = express.Router()
-const response = require('../../network/response')
 const axios = require('axios')
-const qs = require('qs')
 const config = require('../../../config')
 
-const currentLives = {}
-
-const createStreamingPolicy = async (info) => {
+const createStreamingPolicy = async ({ token }) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'put',
-      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaServices/${config.azureAccountName}/streamingPolicies/${info.userID}StreamingPolicy?api-version=2018-07-01`,
+      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaServices/${config.azureAccountName}/streamingPolicies/ChiperLiveStreamingPolicy?api-version=2018-07-01`,
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${info.token}`,
+        Authorization: `Bearer ${token}`
       },
       data: {
         properties: {
@@ -24,11 +17,11 @@ const createStreamingPolicy = async (info) => {
               download: true,
               dash: true,
               hls: true,
-              smoothStreaming: true,
-            },
-          },
-        },
-      },
+              smoothStreaming: true
+            }
+          }
+        }
+      }
     })
       .then((response) => {
         console.log('Asset created')
