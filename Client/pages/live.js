@@ -8,7 +8,6 @@ import ButtonBottom from '../src/components/ButtonBottom'
 import Video from '../src/components/Video'
 import InfoBottom from '../src/components/InfoBottom'
 
-import useSocket from '../src/hooks/useSocket'
 import useCamera from '../src/hooks/useCamera'
 import useAuth from '../src/hooks/useAuth'
 
@@ -33,7 +32,7 @@ function Live () {
   const router = useRouter()
 
   const isLive = useSelector((store) => store.isLive)
-  const userID = useSelector((store) => store.currentUser._id)
+  const userId = useSelector((store) => store.currentUser._id)
 
   const dispatch = useDispatch()
 
@@ -88,7 +87,7 @@ function Live () {
     }
     try {
       const res = await axios.post(ENDPOINT + '/loginMediaServices', {
-        userID,
+        userId,
         liveName: liveName.current.value
       })
       console.log(res.data)
@@ -116,7 +115,7 @@ function Live () {
         method: 'post',
         url: 'http://localhost:8080/startStreaming',
         data: {
-          userID
+          userId
         }
       })
       console.log(res)
