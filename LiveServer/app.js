@@ -59,7 +59,11 @@ io.on('connection', (socket) => {
   socket.on('close', (e) => {
     ffmpeg.kill('SIGINT')
   })
+
 })
+    io.on('disconnect', ()=>{
+      console.log('Client disconnected');
+    })
 
 server.listen(config.port, () => {
   console.log('Server running on port 8080')
