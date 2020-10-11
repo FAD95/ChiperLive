@@ -15,7 +15,8 @@ const config = {
   azureClientSecret: process.env.AZURE_CLIENT_SECRET || 'default',
   azureStorageAccountName: process.env.AZURE_STORAGE_ACCOUNT_NAME || 'default',
   azureRegion: process.env.AZURE_REGION || '',
-  azureStreamingPolicyName : process.env.AZURE_STREAMING_POLICY_NAME || 'default'
+  azureStreamingPolicyName : process.env.AZURE_STREAMING_POLICY_NAME || 'default',
+  azureApiVersion: process.env.AZURE_API_VERSION || '2018-07-01'
 }
 
 module.exports = config
