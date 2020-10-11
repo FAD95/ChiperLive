@@ -20,7 +20,7 @@ const login = () => {
     })
       .then((response) => {
         console.log('Logged with azure.')
-        resolve(response)
+        resolve(response.data.access_token)
       })
       .catch((err) => {
         console.error('Cant signIn in azure')
