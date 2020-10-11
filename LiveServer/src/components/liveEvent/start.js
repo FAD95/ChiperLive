@@ -8,10 +8,10 @@ router.post('/', async (req, res, next) => {
 
   try {
     const azureToken = await getToken()
-    await startLiveEvent({azureToken, userId})
+    await startLiveEvent({ azureToken, userId })
     res.status(200).send('Ya puedes transmitir')
   } catch (error) {
-    console.error(error.response);
+    console.error(error.response)
   }
 })
 

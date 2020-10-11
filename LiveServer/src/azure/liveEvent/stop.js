@@ -9,8 +9,8 @@ const stopLiveEvent = ({ azureToken, userId }) => {
       headers: {
         Authorization: `Bearer ${azureToken}`
       },
-      data:{
-        "removeOutputsOnStop": true
+      data: {
+        removeOutputsOnStop: true
       }
     })
       .then((response) => {
@@ -25,4 +25,3 @@ const stopLiveEvent = ({ azureToken, userId }) => {
 }
 
 module.exports = stopLiveEvent
-

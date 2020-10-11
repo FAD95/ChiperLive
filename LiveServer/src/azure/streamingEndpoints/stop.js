@@ -5,7 +5,7 @@ const stopStreamingEndpoint = ({ azureToken, userId }) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'POST',
-      
+
       url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaservices/${config.azureAccountName}/streamingEndpoints/${userId}StreamingEndpoint/stop?api-version=${config.azureApiVersion}`,
       headers: {
         Accept: 'application/json',

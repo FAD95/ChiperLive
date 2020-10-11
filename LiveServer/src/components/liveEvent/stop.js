@@ -8,7 +8,7 @@ router.post('/', async (req, res, next) => {
 
   try {
     const azureToken = await getToken()
-    await stop({azureToken,userId})
+    await stop({ azureToken, userId })
     res.status(200).send('Live Event Stoped')
   } catch (error) {
     console.error(error)

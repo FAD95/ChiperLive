@@ -12,12 +12,12 @@ const liveEvent = ({ azureToken, userId, liveName }) => {
           await createLiveEvent({ azureToken, userId, liveName })
           let liveEventExist = false
           while (!liveEventExist) {
-              try {
-                await getLiveEvent({azureToken, userId})
-                liveEventExist = true
-                resolve('done')     
-              } catch (error) { 
-              }
+            try {
+              await getLiveEvent({ azureToken, userId })
+              liveEventExist = true
+              resolve('done')
+            } catch (error) {
+            }
           }
         } catch (error) {
           reject(error)

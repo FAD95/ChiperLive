@@ -13,54 +13,54 @@ const createStreamingEndpoint = async ({ azureToken, userId }) => {
         Connection: 'keep-alive'
       },
       data: {
-        "id": null,
-        "name": userId,
-        "location": config.azureRegion,
-        "tags": {
-          "tag1": "value1",
-          "tag2": "value2"
+        id: null,
+        name: userId,
+        location: config.azureRegion,
+        tags: {
+          tag1: 'value1',
+          tag2: 'value2'
         },
-        "properties": {
-          "description": "test event 1",
-          "scaleUnits": 1,
-          "availabilitySetName": "availableset",
-          "accessControl": {
-            "akamai": {
-              "akamaiSignatureHeaderAuthenticationKeyList": [
+        properties: {
+          description: 'test event 1',
+          scaleUnits: 1,
+          availabilitySetName: 'availableset',
+          accessControl: {
+            akamai: {
+              akamaiSignatureHeaderAuthenticationKeyList: [
                 {
-                  "identifier": "id1",
-                  "expiration": "2029-12-31T16:00:00-08:00",
-                  "base64Key": "dGVzdGlkMQ=="
+                  identifier: 'id1',
+                  expiration: '2029-12-31T16:00:00-08:00',
+                  base64Key: 'dGVzdGlkMQ=='
                 },
                 {
-                  "identifier": "id2",
-                  "expiration": "2030-12-31T16:00:00-08:00",
-                  "base64Key": "dGVzdGlkMQ=="
+                  identifier: 'id2',
+                  expiration: '2030-12-31T16:00:00-08:00',
+                  base64Key: 'dGVzdGlkMQ=='
                 }
               ]
             },
-            "ip": {
-              "allow": [
+            ip: {
+              allow: [
                 {
-                  "name": "AllowedIp",
-                  "address": "192.168.1.1"
+                  name: 'AllowedIp',
+                  address: '192.168.1.1'
                 }
               ]
             }
           },
-          "cdnEnabled": false
+          cdnEnabled: false
         }
       }
     })
       .then(async (response) => {
         let started = false
-        while(!started){
+        while (!started) {
           try {
-            await getStreamingEndpoint({azureToken, userId})
+            await getStreamingEndpoint({ azureToken, userId })
             started = true
-            console.log('Straming Endpoint created');
+            console.log('Straming Endpoint created')
           } catch (error) {
-            console.log('Waiting while streaming endpoint is created');
+            console.log('Waiting while streaming endpoint is created')
           }
         }
         console.log('Streaming Endpoint created')

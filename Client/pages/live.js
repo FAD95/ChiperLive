@@ -20,9 +20,9 @@ import setIsLive from '../src/redux/actions/setIsLive'
 
 const ENDPOINT = process.env.LIVE_SERVER
 
-const getSocket = (rtmpUrl) =>{
+const getSocket = (rtmpUrl) => {
   let socket = null
-  if(!socket){
+  if (!socket) {
     socket = io(`${ENDPOINT}?url=${rtmpUrl}`)
   }
   return socket
@@ -65,13 +65,13 @@ function Live () {
       setTimeout(() => {
         startStreaming(canvasRef, inputStreamRef, mediaRecorderRef, socket)
         dispatch(setIsLive(true))
-      }, 5000);
+      }, 5000)
     } catch (error) {
       console.error(error)
     }
   }
 
-  const finishLive = async(e) => {
+  const finishLive = async (e) => {
     e.preventDefault()
     const ans = confirm('Are you sure you want to finish the LIVE?')
     if (ans) {
@@ -82,8 +82,8 @@ function Live () {
           data: {
             userId
           }
-        })        
-        
+        })
+
         /* stopStreaming(mediaRecorderRef, socket) */
       } catch (error) {
         console.error(error.response)
@@ -93,8 +93,8 @@ function Live () {
       mediaRecorderRef.current.stop()
       dispatch(setIsLive(false))
       router.push('/')
-    } 
-    console.log('Nothing happened')  
+    }
+    console.log('Nothing happened')
   }
 
   const handleStop = async (e) => {
@@ -115,7 +115,6 @@ function Live () {
     } catch (error) {
       console.error(error.response)
     }
-    
   }
 
   return (
@@ -145,7 +144,6 @@ function Live () {
         <button onClick={(e) => handleStop(e)}>
           Parar transmison en azure
         </button>
-
 
         {!cameraEnabled ? (
           <InfoBottom>

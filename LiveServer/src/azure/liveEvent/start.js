@@ -22,4 +22,3 @@ const startLiveEvent = ({ azureToken, userId }) => {
 }
 
 module.exports = startLiveEvent
-
