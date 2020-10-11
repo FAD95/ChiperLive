@@ -1,9 +1,11 @@
 const express = require('express')
 const loginMediaServices = require('../components/loginMediaServices/network')
-const startStreaming = require('../components/startStreaming/network')
+const startLiveEvent = require('../components/liveEvent/start')
+const stopLiveEvent = require('../components/liveEvent/stop')
 const routes = function (server) {
   server.use('/loginMediaServices', loginMediaServices)
-  server.use('/startStreaming', startStreaming)
+  server.use('/startLiveEvent', startLiveEvent)
+  server.use('/stopLiveEvent', stopLiveEvent)
 }
 
 module.exports = routes
