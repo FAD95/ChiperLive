@@ -1,14 +1,14 @@
 const axios = require('axios')
 const config = require('../../../config')
 
-const createLiveEvent = ({ token, userId, liveName }) => {
+const createLiveEvent = ({ azureToken, userId, liveName }) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'put',
-      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaservices/${config.azureAccountName}/liveEvents/${userId}?api-version=2018-07-01&autoStart=false`,
+      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaservices/${config.azureAccountName}/liveEvents/${userId}?api-version=${config.azureApiVersion}&autoStart=false`,
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${azureToken}`
       },
       data: {
         location: config.azureRegion,
