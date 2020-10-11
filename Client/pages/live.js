@@ -23,7 +23,7 @@ const ENDPOINT = process.env.LIVE_SERVER
 const getSocket = (rtmpUrl) =>{
   let socket = null
   if(!socket){
-    socket = io(`http://localhost:8080?url=${rtmpUrl}`)
+    socket = io(`${ENDPOINT}?url=${rtmpUrl}`)
   }
   return socket
 }
@@ -49,14 +49,14 @@ function Live () {
       return
     }
     try {
-      const res = await axios.post(ENDPOINT + '/loginMediaServices', {
+      const res = await axios.post(`${ENDPOINT}/loginMediaServices`, {
         userId,
         liveName: liveName.current.value
       })
       const rtmpUrl = res.data
       await axios({
         method: 'post',
-        url: 'http://localhost:8080/startLiveEvent',
+        url: `${ENDPOINT}/startLiveEvent`,
         data: {
           userId
         }
@@ -78,7 +78,7 @@ function Live () {
       try {
         await axios({
           method: 'post',
-          url: 'http://localhost:8080/stopLiveEvent',
+          url: `${ENDPOINT}/stopLiveEvent`,
           data: {
             userId
           }
@@ -102,7 +102,7 @@ function Live () {
     try {
       await axios({
         method: 'post',
-        url: 'http://localhost:8080/stopLiveEvent',
+        url: `${ENDPOINT}/stopLiveEvent`,
         data: {
           userId
         }
