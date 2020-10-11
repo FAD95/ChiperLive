@@ -1,14 +1,14 @@
 const axios = require('axios')
 const config = require('../../../config')
 
-const createStreamingLocator = async ({ token, userId, assetName }) => {
+const createStreamingLocator = async ({ azureToken, userId, assetName }) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'put',
-      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaServices/${config.azureAccountName}/streamingLocators/${userId}StreamingLocator?api-version=2018-07-01`,
+      url: `https://management.azure.com/subscriptions/${config.azureSubscriptionId}/resourceGroups/${config.azureResourceGroupName}/providers/Microsoft.Media/mediaServices/${config.azureAccountName}/streamingLocators/${userId}?api-version=${config.azureApiVersion}`,
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${azureToken}`
       },
       data: {
         properties: {
