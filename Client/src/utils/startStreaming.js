@@ -1,8 +1,4 @@
-import io from 'socket.io-client'
-import axios from 'axios'
-
-const startStreaming = (canvasRef, inputStreamRef, mediaRecorderRef, url) => {
-  const socket = io(`http://localhost:8080?url=${url}`)
+const startStreaming = (canvasRef, inputStreamRef, mediaRecorderRef, socket) => {
   const videoOutputStream = canvasRef.current.captureStream(30) // 30 FPS
 
   const audioStream = new MediaStream()
