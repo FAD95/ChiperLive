@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Loader from 'react-loader-spinner'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import io from 'socket.io-client'
 
 import Head from '../src/components/head'
 import ButtonBottom from '../src/components/ButtonBottom'
@@ -19,11 +20,17 @@ import setIsLive from '../src/redux/actions/setIsLive'
 
 const ENDPOINT = process.env.LIVE_SERVER
 
+const getSocket = (rtmpUrl) =>{
+  let socket = null
+  if(!socket){
+    socket = io(`http://localhost:8080?url=${rtmpUrl}`)
+  }
+  return socket
+}
+
 function Live () {
   const liveName = useRef()
   const mediaRecorderRef = useRef()
-
-  const [rtmpUrl, setRtmpUrl] = useState('')
 
   const [logged] = useAuth('/live')
 
@@ -33,51 +40,7 @@ function Live () {
 
   const isLive = useSelector((store) => store.isLive)
   const userId = useSelector((store) => store.currentUser._id)
-
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    return async () => {
-      try {
-        // Delete streamingLocator
-        await axios({
-          method: 'DELETE',
-          url: `https://management.azure.com/subscriptions/3a88a26f-cfc6-4bb8-a08b-8204c3a3f0af/resourceGroups/chiperlive/providers/Microsoft.Media/mediaServices/chiperlive/streamingLocators/${userID}StreamingLocator?api-version=2018-07-01`,
-          data: {
-            Authorization: `Bearer ${azureToken}`
-          }
-        })
-
-        // Delete liveOutput
-        await axios({
-          method: 'DELETE',
-          url: `https://management.azure.com/subscriptions/3a88a26f-cfc6-4bb8-a08b-8204c3a3f0af/resourceGroups/chiperlive/providers/Microsoft.Media/mediaservices/chiperlive/liveEvents/${userID}/liveOutputs/${userID}Output?api-version=2018-07-01`,
-          data: {
-            Authorization: `Bearer ${azureToken}`
-          }
-        })
-
-        // Delete asset
-        await axios({
-          method: 'DELETE',
-          url: `https://management.azure.com/subscriptions/3a88a26f-cfc6-4bb8-a08b-8204c3a3f0af/resourceGroups/chiperlive/providers/Microsoft.Media/mediaServices/chiperlive/assets/${userID}Asset?api-version=2018-07-01`,
-          data: {
-            Authorization: `Bearer ${azureToken}`
-          }
-        })
-
-        // Delete liveEvent
-        await axios({
-          method: 'DELETE',
-          url: `https://management.azure.com/subscriptions/3a88a26f-cfc6-4bb8-a08b-8204c3a3f0af/resourceGroups/chiperlive/providers/Microsoft.Media/mediaservices/chiperlive/liveEvents/${userID}?api-version=2018-07-01`,
-          data: {
-            Authorization: `Bearer ${azureToken}`
-          }
-        })
-      } catch (error) {}
-      dispatch(setIsLive(false))
-    }
-  }, [])
 
   const handleStartStreaming = async (e) => {
     e.preventDefault()
@@ -90,40 +53,69 @@ function Live () {
         userId,
         liveName: liveName.current.value
       })
-      console.log(res.data)
-      setRtmpUrl(res.data)
+      const rtmpUrl = res.data
+      await axios({
+        method: 'post',
+        url: 'http://localhost:8080/startLiveEvent',
+        data: {
+          userId
+        }
+      })
+      const socket = getSocket(rtmpUrl)
+      setTimeout(() => {
+        startStreaming(canvasRef, inputStreamRef, mediaRecorderRef, socket)
+        dispatch(setIsLive(true))
+      }, 5000);
     } catch (error) {
       console.error(error)
     }
   }
 
-  const finishLive = (e) => {
+  const finishLive = async(e) => {
     e.preventDefault()
     const ans = confirm('Are you sure you want to finish the LIVE?')
     if (ans) {
+      try {
+        await axios({
+          method: 'post',
+          url: 'http://localhost:8080/stopLiveEvent',
+          data: {
+            userId
+          }
+        })        
+        
+        /* stopStreaming(mediaRecorderRef, socket) */
+      } catch (error) {
+        console.error(error.response)
+      }
+      const socket = getSocket()
+      socket.disconnect()
+      mediaRecorderRef.current.stop()
+      dispatch(setIsLive(false))
       router.push('/')
-    } else {
-      console.log('Nothing happened')
-    }
+    } 
+    console.log('Nothing happened')  
   }
 
-  const handlePlay = async (e) => {
+  const handleStop = async (e) => {
     e.preventDefault()
-
     try {
-      const res = await axios({
+      await axios({
         method: 'post',
-        url: 'http://localhost:8080/startStreaming',
+        url: 'http://localhost:8080/stopLiveEvent',
         data: {
           userId
         }
       })
-      console.log(res)
-      startStreaming(canvasRef, inputStreamRef, mediaRecorderRef, rtmpUrl)
-      dispatch(setIsLive(true))
+      const socket = getSocket()
+      socket.disconnect()
+      mediaRecorderRef.current.stop()
+      dispatch(setIsLive(false))
+      router.push('/')
     } catch (error) {
       console.error(error.response)
     }
+    
   }
 
   return (
@@ -150,6 +142,10 @@ function Live () {
         <button onClick={(e) => handlePlay(e)}>
           Iniciar transmison en azure
         </button>
+        <button onClick={(e) => handleStop(e)}>
+          Parar transmison en azure
+        </button>
+
 
         {!cameraEnabled ? (
           <InfoBottom>
