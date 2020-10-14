@@ -14,11 +14,11 @@ const stopLiveEvent = ({ azureToken, userId }) => {
       }
     })
       .then((response) => {
-        console.log('Live event exist')
+        console.log('Live event stoped')
         resolve(response)
       })
       .catch((error) => {
-        console.error('Live event does not exist')
+        console.error('Live event cant stop')
         reject(error)
       })
   })

@@ -1,7 +1,7 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { seedJwt, tokenCaducidad } = require('../../config')
+const { seedJwt, tokenCaducidad } = require('../../../config')
 const router = express.Router()
 const response = require('../../network/response')
 const controller = require('./controller.js')

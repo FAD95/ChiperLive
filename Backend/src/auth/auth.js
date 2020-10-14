@@ -5,7 +5,7 @@ const controller = require('../components/login/controller')
 const bcrypt = require('bcrypt')
 const JWTStrategy = require('passport-jwt').Strategy
 const ExtractJWT = require('passport-jwt').ExtractJwt
-const config = require('../config')
+const config = require('../../config')
 
 passport.use(
   'signup',

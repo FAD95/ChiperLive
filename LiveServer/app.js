@@ -39,7 +39,7 @@ io.on('connection', (socket) => {
     console.log(
       'FFmpeg child process closed, code ' + code + ', signal ' + signal
     )
-    socket.disconnect(true)
+    socket.disconnect()
   })
 
   ffmpeg.stdin.on('error', (e) => {
@@ -56,12 +56,9 @@ io.on('connection', (socket) => {
     }
   })
 
-  socket.on('close', (e) => {
+  socket.on('disconnect', (e) => {
     ffmpeg.kill('SIGINT')
   })
-})
-io.on('disconnect', () => {
-  console.log('Client disconnected')
 })
 
 server.listen(config.port, () => {

@@ -18,12 +18,13 @@ import stopStreaming from '../src/utils/stopStreaming'
 import { useSelector, useDispatch } from 'react-redux'
 import setIsLive from '../src/redux/actions/setIsLive'
 
-const ENDPOINT = process.env.LIVE_SERVER
+const ENDPOINT = process.env.SERVER
+const LIVE_ENDPOINT = process.env.LIVE_SERVER
 
 const getSocket = (rtmpUrl) => {
   let socket = null
   if (!socket) {
-    socket = io(`${ENDPOINT}?url=${rtmpUrl}`)
+    socket = io(`${LIVE_ENDPOINT}?url=${rtmpUrl}`)
   }
   return socket
 }
@@ -54,6 +55,7 @@ function Live () {
         liveName: liveName.current.value
       })
       const rtmpUrl = res.data
+      const socket = getSocket(rtmpUrl)
       await axios({
         method: 'post',
         url: `${ENDPOINT}/startLiveEvent`,
@@ -61,7 +63,6 @@ function Live () {
           userId
         }
       })
-      const socket = getSocket(rtmpUrl)
       setTimeout(() => {
         startStreaming(canvasRef, inputStreamRef, mediaRecorderRef, socket)
         dispatch(setIsLive(true))
@@ -71,52 +72,35 @@ function Live () {
     }
   }
 
-  const finishLive = async (e) => {
+  const finishLive =async (e) => {
     e.preventDefault()
     const ans = confirm('Are you sure you want to finish the LIVE?')
     if (ans) {
-      try {
-        await axios({
-          method: 'post',
-          url: `${ENDPOINT}/stopLiveEvent`,
-          data: {
-            userId
+        setTimeout(async () => {
+          
+          try {
+            await axios({
+              method: 'post',
+              url: `${ENDPOINT}/stopLiveEvent`,
+              data: {
+                userId
+              }
+            })
+            
+            /* stopStreaming(mediaRecorderRef, socket) */
+          } catch (error) {
+            console.error(error.response)
           }
-        })
-
-        /* stopStreaming(mediaRecorderRef, socket) */
-      } catch (error) {
-        console.error(error.response)
+        }, 30000);
+          const socket = getSocket()
+          socket.disconnect()
+          mediaRecorderRef.current.stop()
+          dispatch(setIsLive(false))
+          router.push('/')
+        
       }
-      const socket = getSocket()
-      socket.disconnect()
-      mediaRecorderRef.current.stop()
-      dispatch(setIsLive(false))
-      router.push('/')
-    }
     console.log('Nothing happened')
   }
-
-  const handleStop = async (e) => {
-    e.preventDefault()
-    try {
-      await axios({
-        method: 'post',
-        url: `${ENDPOINT}/stopLiveEvent`,
-        data: {
-          userId
-        }
-      })
-      const socket = getSocket()
-      socket.disconnect()
-      mediaRecorderRef.current.stop()
-      dispatch(setIsLive(false))
-      router.push('/')
-    } catch (error) {
-      console.error(error.response)
-    }
-  }
-
   return (
     logged && (
       <>
@@ -140,9 +124,6 @@ function Live () {
 
         <button onClick={(e) => handlePlay(e)}>
           Iniciar transmison en azure
-        </button>
-        <button onClick={(e) => handleStop(e)}>
-          Parar transmison en azure
         </button>
 
         {!cameraEnabled ? (

@@ -3,13 +3,13 @@ var app = express()
 const config = require('./config')
 
 const bodyparser = require('body-parser')
-const db = require('./db')
-const router = require('./network/routes')
+const db = require('./src/db')
+const router = require('./src/network/routes')
 const cors = require('cors')
 
 db.connect(config.dbUrl)
 
-require('./auth/auth')
+require('./src/auth/auth')
 
 app.use(cors())
 app.use(bodyparser.json())
