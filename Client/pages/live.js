@@ -24,12 +24,12 @@ const LIVE_ENDPOINT = process.env.LIVE_SERVER
 const getSocket = (rtmpUrl) => {
   let socket = null
   if (!socket) {
-    socket = io(`${LIVE_ENDPOINT}?url=${rtmpUrl}`)
+    socket = io(`${LIVE_ENDPOINT}/?url=${rtmpUrl}`)
   }
   return socket
 }
 
-function Live () {
+function Live() {
   const liveName = useRef()
   const mediaRecorderRef = useRef()
 
@@ -52,7 +52,7 @@ function Live () {
     try {
       const res = await axios.post(`${ENDPOINT}/loginMediaServices`, {
         userId,
-        liveName: liveName.current.value
+        liveName: liveName.current.value,
       })
       const rtmpUrl = res.data
       const socket = getSocket(rtmpUrl)
@@ -60,8 +60,8 @@ function Live () {
         method: 'post',
         url: `${ENDPOINT}/startLiveEvent`,
         data: {
-          userId
-        }
+          userId,
+        },
       })
       setTimeout(() => {
         startStreaming(canvasRef, inputStreamRef, mediaRecorderRef, socket)
@@ -72,33 +72,30 @@ function Live () {
     }
   }
 
-  const finishLive =async (e) => {
+  const finishLive = async (e) => {
     e.preventDefault()
     const ans = confirm('Are you sure you want to finish the LIVE?')
     if (ans) {
-        setTimeout(async () => {
-          
-          try {
-            await axios({
-              method: 'post',
-              url: `${ENDPOINT}/stopLiveEvent`,
-              data: {
-                userId
-              }
-            })
-            
-            /* stopStreaming(mediaRecorderRef, socket) */
-          } catch (error) {
-            console.error(error.response)
-          }
-        }, 30000);
-          const socket = getSocket()
-          socket.disconnect()
-          mediaRecorderRef.current.stop()
-          dispatch(setIsLive(false))
-          router.push('/')
-        
+      try {
+        await axios({
+          method: 'post',
+          url: `${ENDPOINT}/stopLiveEvent`,
+          data: {
+            userId,
+          },
+        })
+
+        /* stopStreaming(mediaRecorderRef, socket) */
+      } catch (error) {
+        console.error(error.response)
       }
+
+      const socket = getSocket()
+      socket.disconnect()
+      mediaRecorderRef.current.stop()
+      dispatch(setIsLive(false))
+      router.push('/')
+    }
     console.log('Nothing happened')
   }
   return (
