@@ -1,6 +1,5 @@
 const axios = require('axios')
 const config = require('../../../config')
-const streamingLocator = require('../streamingLocator')
 
 const listPaths = async (azureToken, streamingLocatorName) => {
     return new Promise((resolve, reject) => {
