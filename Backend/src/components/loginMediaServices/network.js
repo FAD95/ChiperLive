@@ -24,24 +24,24 @@ router.post('/', async (req, res, next) => {
       const assetName = await createAsset({
         azureToken,
         userId,
-        liveName
+        liveName,
       })
 
       await liveOutput({
         azureToken,
         userId,
         liveName,
-        assetName
+        assetName,
       })
 
       await streamingLocator({
         azureToken,
         userId,
-        assetName
+        assetName,
       })
       const actualStreamingLocator = await getLiveEvent({ azureToken, userId })
       const rtmpUrl =
-              actualStreamingLocator.data.properties.input.endpoints[0].url + '/live'
+        actualStreamingLocator.data.properties.input.endpoints[0].url + '/live'
 
       res.status(200).send(rtmpUrl)
     } catch (error) {
