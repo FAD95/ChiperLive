@@ -2,6 +2,7 @@ const axios = require('axios')
 const config = require('../../../config')
 
 const getLiveEvent = ({ azureToken, userId }) => {
+  
   return new Promise((resolve, reject) => {
     axios({
       method: 'get',
