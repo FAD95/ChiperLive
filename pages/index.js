@@ -1,5 +1,4 @@
 import { useEffect, memo } from 'react'
-import axios from 'axios'
 
 import useAuth from '../src/hooks/useAuth'
 

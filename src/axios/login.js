@@ -15,7 +15,7 @@ const Login = ({ email, password }) => {
       .catch(function (error) {
         if (error.response) {
           if (error.response.status === 401) {
-            reject('E-mail o contraseña incorrectos')
+            reject(new Error('E-mail o contraseña incorrectos'))
           }
         }
         reject(error)

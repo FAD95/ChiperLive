@@ -2,7 +2,7 @@ import useAuth from '../src/hooks/useAuth'
 import Head from '../src/components/head'
 import { useSelector } from 'react-redux'
 
-export default function FirstPost() {
+export default function FirstPost () {
   const [logged] = useAuth('/profile')
   const user = useSelector((store) => store.currentUser)
   console.log(user.firstName)
