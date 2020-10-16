@@ -1,6 +1,6 @@
 # Description
 
-This server works as a encoder and as a endpoint for live video transmissions, the general idea of the server is take that video in real time and apply a serie of transformations to stream that it in the best way to a RTMP server.
+This client records the video and audio to be sent to the server to encode and stream to azure.
 
 # Tecnologies
 
