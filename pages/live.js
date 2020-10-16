@@ -13,7 +13,6 @@ import useCamera from '../src/hooks/useCamera'
 import useAuth from '../src/hooks/useAuth'
 
 import startStreaming from '../src/utils/startStreaming'
-import stopStreaming from '../src/utils/stopStreaming'
 
 import { useSelector, useDispatch } from 'react-redux'
 import setIsLive from '../src/redux/actions/setIsLive'
@@ -35,6 +34,8 @@ function Live() {
   const liveName = useRef()
   const mediaRecorderRef = useRef()
 
+  const [creatingStreaming, setCreatingStreaming] = useState(false)
+
   const [logged] = useAuth('/live')
 
   const [{ inputStreamRef, videoRef, canvasRef, cameraEnabled }] = useCamera()
@@ -52,6 +53,7 @@ function Live() {
       return
     }
     try {
+      setCreatingStreaming(true)
       const res = await axios.post(`${ENDPOINT}/loginMediaServices`, {
         userId,
         liveName: liveName.current.value,
@@ -68,8 +70,10 @@ function Live() {
       setTimeout(() => {
         startStreaming(canvasRef, inputStreamRef, mediaRecorderRef, socket)
         dispatch(setIsLive(true))
+        setCreatingStreaming(false)
       }, 5000)
     } catch (error) {
+      alert('Algo salió mal. Vuelve a intentarlo. :)')
       console.error(error)
     }
   }
@@ -96,6 +100,7 @@ function Live() {
       mediaRecorderRef.current.stop()
       dispatch(setIsLive(false))
       router.push('/')
+      return
     }
     console.log('Nothing happened')
   }
@@ -110,23 +115,31 @@ function Live() {
               color='#fa0236'
               height={100}
               width={100}
-              timeout={3000} // 3 secs
+              timeout={10000} // 3 secs
             />
           </div>
         )}
 
         <Video videoRef={videoRef} />
         <canvas ref={canvasRef} style={{ display: 'none' }} />
-
-        <input type='text' ref={liveName} />
-
-        <button onClick={(e) => handlePlay(e)}>
-          Iniciar transmison en azure
-        </button>
+        {!isLive && (
+          <div className='container'>
+            <input
+              type='text'
+              ref={liveName}
+              placeholder='Nombre del live'
+              disabled={creatingStreaming}
+            />
+          </div>
+        )}
 
         {!cameraEnabled ? (
           <InfoBottom>
             <p>Habilitando camara...</p>
+          </InfoBottom>
+        ) : creatingStreaming ? (
+          <InfoBottom>
+            <p>Iniciando transmisión...</p>
           </InfoBottom>
         ) : !isLive ? (
           <ButtonBottom
@@ -147,6 +160,16 @@ function Live() {
               display: flex;
               justify-content: center;
               align-items: center;
+            }
+            input {
+              height: 40px;
+              width: 300px;
+              max-width: 75%;
+              border-radius: 10px;
+              padding: 0 10px;
+              position: absolute;
+              bottom: 90px;
+              z-index: 9999;
             }
           `}
         </style>
