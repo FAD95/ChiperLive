@@ -14,7 +14,9 @@ Through WebSockets the video and the audio is streamed in real time.
 
 # Preview
 
-![Inicio](/public/main.jpeg)
+![Inicio](/public/main.jpeg =200px)
+![Inicio](/public/profile.jpeg =200px)
+![Inicio](/public/stream.jpeg =200px)
 
 # Run Scripts
 
