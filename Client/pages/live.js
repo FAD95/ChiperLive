@@ -24,7 +24,9 @@ const LIVE_ENDPOINT = process.env.LIVE_SERVER
 const getSocket = (rtmpUrl) => {
   let socket = null
   if (!socket) {
-    socket = io(`${LIVE_ENDPOINT}/?url=${rtmpUrl}`)
+    socket = io(`${LIVE_ENDPOINT}/?url=${rtmpUrl}`, {
+      reconnection: false,
+    })
   }
   return socket
 }
@@ -89,9 +91,8 @@ function Live() {
       } catch (error) {
         console.error(error.response)
       }
-
       const socket = getSocket()
-      socket.disconnect()
+      socket.off()
       mediaRecorderRef.current.stop()
       dispatch(setIsLive(false))
       router.push('/')
