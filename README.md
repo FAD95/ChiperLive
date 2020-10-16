@@ -16,7 +16,7 @@ Through WebSockets the video and the audio is streamed in real time.
 
 ### Web site
 
-[https://chiper-live-streamer.vercel.app/]
+https://chiper-live-streamer.vercel.app/
 
 ### Main
 
