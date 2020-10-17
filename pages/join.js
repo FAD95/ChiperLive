@@ -2,10 +2,6 @@ import { useRef, memo, useState, useEffect } from 'react'
 import Link from 'next/link'
 import axios from 'axios'
 import { useRouter } from 'next/router'
-import { useDispatch } from 'react-redux'
-import setAuth from '../src/redux/actions/setAuth'
-
-import login from '../src/axios/login'
 
 import useAuth from '../src/hooks/useAuth'
 
@@ -39,7 +35,6 @@ const Join = memo(() => {
 
   const [logged] = useAuth('/join')
 
-  const dispatch = useDispatch()
   const router = useRouter()
 
   useEffect(() => {
@@ -87,7 +82,7 @@ const Join = memo(() => {
     if (rePassword.current.value === password.current.value) {
       try {
         setCreatingUser(true)
-        const signupRes = await axios.post(process.env.SERVER + '/user', {
+        await axios.post(process.env.SERVER + '/user', {
           firstName: firstName.current.value,
           lastName: lastName.current.value,
           countryCode: countryCode.current.value,
@@ -99,20 +94,9 @@ const Join = memo(() => {
           password: password.current.value,
           role: 'CHAMPION'
         })
-        if (signupRes) {
-          const loginRes = await login({
-            email: email.current.value,
-            password: password.current.value
-          })
-          dispatch(
-            setAuth({
-              status: true,
-              token: loginRes.data.token
-            })
-          )
-          setCreatingUser(false)
-          router.push('/')
-        }
+       
+        setCreatingUser(false)
+        router.push('/login')
       } catch (error) {
         if (error.response.status === 400) {
           setCreatingUser(false)
